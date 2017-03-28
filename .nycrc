@@ -1,0 +1,15 @@
+{
+  "extension": [
+    ".js"
+  ],
+  "exclude": [
+    ".tmp/**",
+    "tests/**"
+  ],
+  "reporter": [
+    "lcov",
+    "html",
+    "text-summary"
+  ],
+  "report-dir": "./reports/coverage"
+}
