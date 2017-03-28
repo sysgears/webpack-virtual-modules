@@ -6,7 +6,7 @@
 This project is inspired by: https://github.com/rmarscher/virtual-module-webpack-plugin
 
 ## License
-Copyright © 2016 [SysGears INC]. This source code is licensed under the [MIT] license.
+Copyright © 2017 [SysGears INC]. This source code is licensed under the [MIT] license.
 
 [MIT]: LICENSE
 [SysGears INC]: http://sysgears.com
