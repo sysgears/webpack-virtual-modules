@@ -13,7 +13,8 @@ function checkActivation(instance) {
   }
 }
 
-function OverlayModulesPlugin() {
+function OverlayModulesPlugin(modules) {
+  this._staticModules = modules;
 }
 
 function getModulePath(filePath, compiler) {
@@ -66,6 +67,12 @@ OverlayModulesPlugin.prototype.apply = function(compiler) {
   var self = this;
 
   self._compiler = compiler;
+
+  if (self._staticModules) {
+    Object.keys(self._staticModules).forEach(function(path) {
+      self.writeModule(path, self._staticModules[path]);
+    });
+  }
 
   compiler.plugin("after-environment", function() {
     var originalPurge = compiler.inputFileSystem.purge;
