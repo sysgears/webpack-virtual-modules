@@ -69,10 +69,6 @@ compiler.plugin('done', function() {
 compiler.watch();
 ```
 
-If `writeModule` happens after `seal` phase, but before `after-seal` phase the module contents will be replaced as is,
-without using loaders. This is supported to let one update dynamic module contents when compilation has been finished 
-already.
-
 ## Inspiration
 This project is inspired by: https://github.com/rmarscher/virtual-module-webpack-plugin
 

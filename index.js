@@ -1,5 +1,4 @@
 var VirtualStats = require('./virtual-stats');
-var RawSource = require("webpack-sources").RawSource;
 var path = require('path');
 var debug = require('debug')('webpack-virtual-modules');
 
@@ -46,9 +45,6 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
     birthtime: time,
   });
   var modulePath = getModulePath(filePath, self._compiler);
-
-  self._timestamps = self._timestamps || {};
-  self._timestamps[modulePath] = time;
 
   debug(self._compiler.name, "Write module:", modulePath, contents);
 
@@ -98,28 +94,6 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
   compiler.plugin("watch-run", function(watcher, callback) {
     self._watcher = watcher;
     callback();
-  });
-
-  compiler.plugin("compilation", function(compilation) {
-    compilation.plugin("seal", function() {
-      self._sealTime = Date.now();
-      debug(compiler.name, "seal");
-    });
-    compilation.plugin("after-seal", function(callback) {
-      debug(compiler.name, "after-seal");
-      if (self._timestamps) {
-        compilation.modules.forEach(function(module) {
-          var time = self._timestamps[module.resource];
-          if (time && time > self._sealTime) {
-            var contents = compiler.inputFileSystem.readFileSync(module.resource).toString();
-            debug(compiler.name, "Replacing module:", module.resource, contents);
-
-            module._source = new RawSource(contents);
-          }
-        });
-      }
-      callback();
-    });
   });
 };
 
