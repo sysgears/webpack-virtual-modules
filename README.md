@@ -17,7 +17,7 @@ npm install --save-dev webpack-overlay-modules
 
 Sample Webpack config:
 
-```
+```js
 var OverlayModulesPlugin = require("webpack-overlay-modules");
 
 var overlayModules = new OverlayModulesPlugin({
@@ -35,7 +35,7 @@ module.exports = {
 
 Somewhere in the source code:
 
-```
+```js
 var moduleFoo = require('module-foo');
 // Outputs 'foo'
 console.log(moduleFoo.foo());
@@ -43,7 +43,7 @@ console.log(moduleFoo.foo());
 
 ### Dynamic overlay modules generation
 
-```
+```js
 var webpack = require("webpack");
 var OverlayModulesPlugin = require("webpack-overlay-modules");
 
