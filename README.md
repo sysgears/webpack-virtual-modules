@@ -5,6 +5,12 @@
 
 Webpack Plugin that allows dynamical generation of in-memory virtual modules.
 
+## Installation
+
+```bash
+npm install --save-dev webpack-overlay-modules
+```
+
 ## Usage
 
 ### Static overlay modules generation
