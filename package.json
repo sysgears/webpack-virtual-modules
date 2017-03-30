@@ -1,7 +1,7 @@
 {
-  "name": "webpack-overlay-modules",
+  "name": "webpack-virtual-modules",
   "version": "0.1.1",
-  "description": "Webpack Overlay Modules",
+  "description": "Webpack Virtual Modules",
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint --fix .",
@@ -12,21 +12,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sysgears/webpack-overlay-modules.git"
+    "url": "git+https://github.com/sysgears/webpack-virtual-modules.git"
   },
   "keywords": [
     "webpack",
     "webpack-plugin",
     "virtual",
-    "overlay",
     "modules"
   ],
   "author": "SysGears INC",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sysgears/webpack-overlay-modules/issues"
+    "url": "https://github.com/sysgears/webpack-virtual-modules/issues"
   },
-  "homepage": "https://github.com/sysgears/webpack-overlay-modules#readme",
+  "homepage": "https://github.com/sysgears/webpack-virtual-modules#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "eslint": "^3.18.0",

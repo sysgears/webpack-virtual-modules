@@ -1,26 +1,26 @@
-## Webpack Overlay Modules
+## Webpack Virtual Modules
 
-[![Build Status](https://travis-ci.org/sysgears/webpack-overlay-modules.svg?branch=master)](https://travis-ci.org/sysgears/webpack-overlay-modules)
-[![Greenkeeper badge](https://badges.greenkeeper.io/sysgears/webpack-overlay-modules.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.org/sysgears/webpack-virtual-modules.svg?branch=master)](https://travis-ci.org/sysgears/webpack-virtual-modules)
+[![Greenkeeper badge](https://badges.greenkeeper.io/sysgears/webpack-virtual-modules.svg)](https://greenkeeper.io/)
 
 Webpack Plugin that allows dynamical generation of in-memory virtual modules.
 
 ## Installation
 
 ```bash
-npm install --save-dev webpack-overlay-modules
+npm install --save-dev webpack-virtual-modules
 ```
 
 ## Usage
 
-### Static overlay modules generation
+### Static virtual modules generation
 
 Sample Webpack config:
 
 ```js
-var OverlayModulesPlugin = require("webpack-overlay-modules");
+var VirtualModulesPlugin = require("webpack-virtual-modules");
 
-var overlayModules = new OverlayModulesPlugin({
+var virtualModules = new VirtualModulesPlugin({
   'node_modules/module-foo.js': 'module.exports = { foo: function() { return 'foo'; } };'
   'node_modules/module-bar.js': 'module.exports = { bar: function() { return 'bar'; } };'
 });
@@ -28,7 +28,7 @@ var overlayModules = new OverlayModulesPlugin({
 module.exports = {
     // ...
     plugins: [
-      overlayModules
+      virtualModules
     ]
 };
 ```
@@ -41,28 +41,28 @@ var moduleFoo = require('module-foo');
 console.log(moduleFoo.foo());
 ```
 
-### Dynamic overlay modules generation
+### Dynamic virtual modules generation
 
 ```js
 var webpack = require("webpack");
-var OverlayModulesPlugin = require("webpack-overlay-modules");
+var VirtualModulesPlugin = require("webpack-virtual-modules");
 
-var overlayModules = new OverlayModulesPlugin();
+var virtualModules = new VirtualModulesPlugin();
 
 var compiler = webpack({
     // ...
     plugins: [
-      overlayModules
+      virtualModules
     ]
 });
 
 compiler.plugin('watch', function(callback) {
-  overlayModules.writeModule('node_modules/module-foo.js', 'module.exports = {};');
+  virtualModules.writeModule('node_modules/module-foo.js', 'module.exports = {};');
   callback();
 });
 
 compiler.plugin('done', function() {
-  overlayModules.writeModule('node_modules/module-foo.js', 'module.exports = { foo: function() { return 'foo'; } };');
+  virtualModules.writeModule('node_modules/module-foo.js', 'module.exports = { foo: function() { return 'foo'; } };');
   // After this write the webpack will "see" that file module-foo.js has been changed and will restart compilation.
 });
 

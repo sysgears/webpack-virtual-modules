@@ -1,7 +1,7 @@
 var VirtualStats = require('./virtual-stats');
 var RawSource = require("webpack-sources").RawSource;
 var path = require('path');
-var debug = require('debug')('webpack-overlay-modules');
+var debug = require('debug')('webpack-virtual-modules');
 
 var uid = process.getuid && process.getuid() || 0;
 var gid = process.getgid && process.getgid() || 0;
@@ -13,7 +13,7 @@ function checkActivation(instance) {
   }
 }
 
-function OverlayModulesPlugin(modules) {
+function VirtualModulesPlugin(modules) {
   this._staticModules = modules;
 }
 
@@ -21,7 +21,7 @@ function getModulePath(filePath, compiler) {
   return path.isAbsolute(filePath) ? filePath : path.join(compiler.context, filePath);
 }
 
-OverlayModulesPlugin.prototype.writeModule = function(filePath, contents) {
+VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   var self = this;
 
   checkActivation(self);
@@ -52,7 +52,7 @@ OverlayModulesPlugin.prototype.writeModule = function(filePath, contents) {
 
   debug(self._compiler.name, "Write module:", modulePath, contents);
 
-  self._compiler.inputFileSystem._writeOverlayFile(modulePath, stats, contents);
+  self._compiler.inputFileSystem._writeVirtualFile(modulePath, stats, contents);
   if (self._watcher && self._watcher.compiler.watchFileSystem.watcher.fileWatchers.length) {
     self._watcher.compiler.watchFileSystem.watcher.fileWatchers.forEach(function(fileWatcher) {
       if (fileWatcher.path === modulePath) {
@@ -63,7 +63,7 @@ OverlayModulesPlugin.prototype.writeModule = function(filePath, contents) {
   }
 };
 
-OverlayModulesPlugin.prototype.apply = function(compiler) {
+VirtualModulesPlugin.prototype.apply = function(compiler) {
   var self = this;
 
   self._compiler = compiler;
@@ -78,18 +78,18 @@ OverlayModulesPlugin.prototype.apply = function(compiler) {
     var originalPurge = compiler.inputFileSystem.purge;
     compiler.inputFileSystem.purge = function() {
       originalPurge.call(this, arguments);
-      if (this._overlayFiles) {
-        Object.keys(this._overlayFiles).forEach(function(file) {
-          var data = this._overlayFiles[file];
+      if (this._virtualFiles) {
+        Object.keys(this._virtualFiles).forEach(function(file) {
+          var data = this._virtualFiles[file];
           this._statStorage.data[file] = [null, data.stats];
           this._readFileStorage.data[file] = [null, data.contents];
         }.bind(this));
       }
     };
 
-    compiler.inputFileSystem._writeOverlayFile = function(file, stats, contents) {
-      this._overlayFiles = this._overlayFiles || {};
-      this._overlayFiles[file] = {stats: stats, contents: contents};
+    compiler.inputFileSystem._writeVirtualFile = function(file, stats, contents) {
+      this._virtualFiles = this._virtualFiles || {};
+      this._virtualFiles[file] = {stats: stats, contents: contents};
       this._statStorage.data[file] = [null, stats];
       this._readFileStorage.data[file] = [null, contents];
     };
@@ -123,4 +123,4 @@ OverlayModulesPlugin.prototype.apply = function(compiler) {
   });
 };
 
-module.exports = OverlayModulesPlugin;
+module.exports = VirtualModulesPlugin;

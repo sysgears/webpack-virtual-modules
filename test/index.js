@@ -5,7 +5,7 @@ var assert = require("chai").assert;
 
 var Plugin = require("../src/index");
 
-describe("webpack-overlay-modules", function() {
+describe("webpack-virtual-modules", function() {
   it("should fail if not applied as plugin", function() {
     var plugin = new Plugin();
 
