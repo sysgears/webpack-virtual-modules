@@ -3,7 +3,7 @@
 var webpack = require("webpack");
 var assert = require("chai").assert;
 
-var Plugin = require("../src/index");
+var Plugin = require("../index");
 
 describe("webpack-virtual-modules", function() {
   it("should fail if not applied as plugin", function() {

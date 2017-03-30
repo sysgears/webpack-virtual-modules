@@ -1,8 +1,8 @@
 {
   "name": "webpack-virtual-modules",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Webpack Virtual Modules",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "lint": "eslint --fix .",
     "posttest": "npm run lint",
@@ -34,5 +34,6 @@
     "webpack": "^2.3.2"
   },
   "dependencies": {},
+  "files": ["*.js"],
   "greenkeeper": {}
 }
