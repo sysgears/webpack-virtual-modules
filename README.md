@@ -21,8 +21,8 @@ Sample Webpack config:
 var VirtualModulesPlugin = require("webpack-virtual-modules");
 
 var virtualModules = new VirtualModulesPlugin({
-  'node_modules/module-foo.js': 'module.exports = { foo: function() { return 'foo'; } };'
-  'node_modules/module-bar.js': 'module.exports = { bar: function() { return 'bar'; } };'
+  'node_modules/module-foo.js': 'module.exports = { foo: function() { return "foo"; } };'
+  'node_modules/module-bar.js': 'module.exports = { bar: function() { return "bar"; } };'
 });
 
 module.exports = {
@@ -62,7 +62,7 @@ compiler.plugin('watch', function(callback) {
 });
 
 compiler.plugin('done', function() {
-  virtualModules.writeModule('node_modules/module-foo.js', 'module.exports = { foo: function() { return 'foo'; } };');
+  virtualModules.writeModule('node_modules/module-foo.js', 'module.exports = { foo: function() { return "foo"; } };');
   // After this write the webpack will "see" that file module-foo.js has been changed and will restart compilation.
 });
 
