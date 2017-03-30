@@ -12,10 +12,6 @@ describe("webpack-overlay-modules", function() {
     assert.throws(function() {
       plugin.writeModule("example.js", "");
     });
-
-    assert.throws(function() {
-      plugin.replaceLoadedModule("example.js", "");
-    });
   });
 
   it("should NOT fail if applied as plugin", function() {
@@ -28,10 +24,6 @@ describe("webpack-overlay-modules", function() {
 
     assert.doesNotThrow(function() {
       plugin.writeModule("example.js", "");
-    });
-
-    assert.doesNotThrow(function() {
-      plugin.replaceLoadedModule("example.js", "");
     });
   });
 });

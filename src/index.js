@@ -27,6 +27,7 @@ OverlayModulesPlugin.prototype.writeModule = function(filePath, contents) {
 
   var len = contents ? contents.length : 0;
   var time = Date.now();
+
   var stats = new VirtualStats({
     dev: 8675309,
     nlink: 0,
@@ -45,6 +46,9 @@ OverlayModulesPlugin.prototype.writeModule = function(filePath, contents) {
   });
   var modulePath = getModulePath(filePath, self._compiler);
 
+  self._timestamps = self._timestamps || {};
+  self._timestamps[modulePath] = time;
+
   debug(self._compiler.name, "Write module:", modulePath, contents);
 
   self._compiler.inputFileSystem._writeOverlayFile(modulePath, stats, contents);
@@ -56,18 +60,6 @@ OverlayModulesPlugin.prototype.writeModule = function(filePath, contents) {
       }
     });
   }
-};
-
-OverlayModulesPlugin.prototype.replaceLoadedModule = function(filePath, contents) {
-  var self = this;
-
-  checkActivation(self);
-
-  var modulePath = getModulePath(filePath, self._compiler);
-  self.writeModule(modulePath, contents);
-
-  self._toReplace = self._toReplace || {};
-  self._toReplace[modulePath] = contents;
 };
 
 OverlayModulesPlugin.prototype.apply = function(compiler) {
@@ -102,17 +94,24 @@ OverlayModulesPlugin.prototype.apply = function(compiler) {
   });
 
   compiler.plugin("compilation", function(compilation) {
-    compilation.plugin("optimize", function() {
-      if (self._toReplace) {
+    compilation.plugin("seal", function() {
+      self._sealTime = Date.now();
+      debug(compiler.name, "seal");
+    });
+    compilation.plugin("after-seal", function(callback) {
+      debug(compiler.name, "after-seal");
+      if (self._timestamps) {
         compilation.modules.forEach(function(module) {
-          if (self._toReplace.hasOwnProperty(module.resource)) {
-            debug(compiler.name, "Replacing module:", module.resource, self._toReplace[module.resource]);
+          var time = self._timestamps[module.resource];
+          if (time && time > self._sealTime) {
+            var contents = compiler.inputFileSystem.readFileSync(module.resource).toString();
+            debug(compiler.name, "Replacing module:", module.resource, contents);
 
-            module._source = new RawSource(self._toReplace[module.resource]);
+            module._source = new RawSource(contents);
           }
         });
-        delete self._toReplace;
       }
+      callback();
     });
   });
 };
