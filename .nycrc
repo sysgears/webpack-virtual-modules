@@ -4,7 +4,8 @@
   ],
   "exclude": [
     ".tmp/**",
-    "tests/**"
+    "tests/**",
+    "virtual-stats.js"
   ],
   "reporter": [
     "lcov",

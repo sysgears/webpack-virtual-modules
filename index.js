@@ -2,8 +2,6 @@ var VirtualStats = require('./virtual-stats');
 var path = require('path');
 var debug = require('debug')('webpack-virtual-modules');
 
-var uid = process.getuid && process.getuid() || 0;
-var gid = process.getgid && process.getgid() || 0;
 var inode = 45000000;
 
 function checkActivation(instance) {
@@ -31,8 +29,8 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   var stats = new VirtualStats({
     dev: 8675309,
     nlink: 0,
-    uid: uid,
-    gid: gid,
+    uid: 1000,
+    gid: 1000,
     rdev: 0,
     blksize: 4096,
     ino: inode++,
@@ -42,7 +40,7 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
     atime: time,
     mtime: time,
     ctime: time,
-    birthtime: time,
+    birthtime: time
   });
   var modulePath = getModulePath(filePath, self._compiler);
 
@@ -64,31 +62,35 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
 
   self._compiler = compiler;
 
-  if (self._staticModules) {
-    Object.keys(self._staticModules).forEach(function(path) {
-      self.writeModule(path, self._staticModules[path]);
-    });
-  }
-
   compiler.plugin("after-environment", function() {
-    var originalPurge = compiler.inputFileSystem.purge;
-    compiler.inputFileSystem.purge = function() {
-      originalPurge.call(this, arguments);
-      if (this._virtualFiles) {
-        Object.keys(this._virtualFiles).forEach(function(file) {
-          var data = this._virtualFiles[file];
-          this._statStorage.data[file] = [null, data.stats];
-          this._readFileStorage.data[file] = [null, data.contents];
-        }.bind(this));
-      }
-    };
+    if (!compiler.inputFileSystem._writeVirtualFile) {
+      var originalPurge = compiler.inputFileSystem.purge;
 
-    compiler.inputFileSystem._writeVirtualFile = function(file, stats, contents) {
-      this._virtualFiles = this._virtualFiles || {};
-      this._virtualFiles[file] = {stats: stats, contents: contents};
-      this._statStorage.data[file] = [null, stats];
-      this._readFileStorage.data[file] = [null, contents];
-    };
+      compiler.inputFileSystem.purge = function() {
+        originalPurge.call(this, arguments);
+        if (this._virtualFiles) {
+          Object.keys(this._virtualFiles).forEach(function(file) {
+            var data = this._virtualFiles[file];
+            this._statStorage.data[file] = [null, data.stats];
+            this._readFileStorage.data[file] = [null, data.contents];
+          }.bind(this));
+        }
+      };
+
+      compiler.inputFileSystem._writeVirtualFile = function(file, stats, contents) {
+        this._virtualFiles = this._virtualFiles || {};
+        this._virtualFiles[file] = {stats: stats, contents: contents};
+        this._statStorage.data[file] = [null, stats];
+        this._readFileStorage.data[file] = [null, contents];
+      };
+    }
+
+    if (self._staticModules) {
+      Object.keys(self._staticModules).forEach(function(path) {
+        self.writeModule(path, self._staticModules[path]);
+      });
+      delete self._staticModules;
+    }
   });
 
   compiler.plugin("watch-run", function(watcher, callback) {
