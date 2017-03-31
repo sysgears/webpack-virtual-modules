@@ -70,7 +70,7 @@ compiler.watch();
 virtualModules.writeModule('node_modules/module-foo.js', 
     'module.exports = { foo: "foo" };');
 
-// After this writre the webpack will "see" that module-foo.js
+// After this write the webpack will "see" that module-foo.js
 // has been changed and restarts compilation
 ```
 
