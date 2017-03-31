@@ -21,8 +21,8 @@ Sample Webpack config:
 var VirtualModulesPlugin = require("webpack-virtual-modules");
 
 var virtualModules = new VirtualModulesPlugin({
-  'node_modules/module-foo.js': 'module.exports = { foo: function() { return "foo"; } };'
-  'node_modules/module-bar.js': 'module.exports = { bar: function() { return "bar"; } };'
+  'node_modules/module-foo.js': 'module.exports = { foo: "foo" };'
+  'node_modules/module-bar.js': 'module.exports = { bar: "bar" };'
 });
 
 module.exports = {
@@ -38,7 +38,7 @@ Somewhere in the source code:
 ```js
 var moduleFoo = require('module-foo');
 // Outputs 'foo'
-console.log(moduleFoo.foo());
+console.log(moduleFoo.foo);
 ```
 
 ### Dynamic virtual modules generation
@@ -57,16 +57,18 @@ var compiler = webpack({
 });
 
 compiler.plugin('watch', function(callback) {
-  virtualModules.writeModule('node_modules/module-foo.js', 'module.exports = {};');
+  virtualModules.writeModule('node_modules/module-foo.js', '');
   callback();
 });
 
-compiler.plugin('done', function() {
-  virtualModules.writeModule('node_modules/module-foo.js', 'module.exports = { foo: function() { return "foo"; } };');
-  // After this write the webpack will "see" that file module-foo.js has been changed and will restart compilation.
-});
-
 compiler.watch();
+```
+
+
+```js
+// Later in some other code, perhaps in other Webpack plugin:
+virtualModules.writeModule('node_modules/module-foo.js', 'module.exports = { foo: "foo" };');
+// The webpack will "see" that module-foo.js changed and restart compilation
 ```
 
 ## Inspiration
