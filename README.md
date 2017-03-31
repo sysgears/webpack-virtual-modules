@@ -67,8 +67,11 @@ compiler.watch();
 
 ```js
 // Later in some other code, perhaps in other Webpack plugin:
-virtualModules.writeModule('node_modules/module-foo.js', 'module.exports = { foo: "foo" };');
-// The webpack will "see" that module-foo.js changed and restart compilation
+virtualModules.writeModule('node_modules/module-foo.js', 
+    'module.exports = { foo: "foo" };');
+
+// After this writre the webpack will "see" that module-foo.js
+// has been changed and restarts compilation
 ```
 
 ## Inspiration
