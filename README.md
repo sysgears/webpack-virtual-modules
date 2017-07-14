@@ -1,7 +1,7 @@
 ## Webpack Virtual Modules
 
 [![Build Status](https://travis-ci.org/sysgears/webpack-virtual-modules.svg?branch=master)](https://travis-ci.org/sysgears/webpack-virtual-modules)
-[![Greenkeeper badge](https://badges.greenkeeper.io/sysgears/webpack-virtual-modules.svg)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/sysgears/webpack-virtual-modules.svg)](https://greenkeeper.io/) [![Twitter Follow](https://img.shields.io/twitter/follow/sysgears.svg?style=social)](https://twitter.com/sysgears)
 
 Webpack Plugin that allows dynamical generation of in-memory virtual modules.
 
