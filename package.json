@@ -1,6 +1,6 @@
 {
   "name": "webpack-virtual-modules",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Webpack Virtual Modules",
   "main": "index.js",
   "scripts": {
@@ -34,7 +34,9 @@
     "nyc": "^11.0.1",
     "webpack": "^3.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "debug": "^2.6.8"
+  },
   "files": [
     "*.js"
   ],
