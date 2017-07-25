@@ -57,6 +57,14 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   }
 };
 
+function setData(storage, key, value) {
+  if (storage.data instanceof Map) {
+    storage.data.set(key, value);
+  } else {
+    storage.data[key] = value;
+  }
+}
+
 VirtualModulesPlugin.prototype.apply = function(compiler) {
   var self = this;
 
@@ -71,8 +79,8 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         if (this._virtualFiles) {
           Object.keys(this._virtualFiles).forEach(function(file) {
             var data = this._virtualFiles[file];
-            this._statStorage.data[file] = [null, data.stats];
-            this._readFileStorage.data[file] = [null, data.contents];
+            setData(this._statStorage, file, [null, data.stats]);
+            setData(this._readFileStorage, file, [null, data.contents]);
           }.bind(this));
         }
       };
@@ -80,8 +88,8 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
       compiler.inputFileSystem._writeVirtualFile = function(file, stats, contents) {
         this._virtualFiles = this._virtualFiles || {};
         this._virtualFiles[file] = {stats: stats, contents: contents};
-        this._statStorage.data[file] = [null, stats];
-        this._readFileStorage.data[file] = [null, contents];
+        setData(this._statStorage, file, [null, stats]);
+        setData(this._readFileStorage, file, [null, contents]);
       };
     }
 
