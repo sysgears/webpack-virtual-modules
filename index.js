@@ -92,7 +92,9 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         setData(this._readFileStorage, file, [null, contents]);
       };
     }
+  });
 
+  compiler.plugin("after-resolvers", function() {
     if (self._staticModules) {
       Object.keys(self._staticModules).forEach(function(path) {
         self.writeModule(path, self._staticModules[path]);
