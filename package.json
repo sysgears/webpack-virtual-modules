@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --fix .",
     "posttest": "npm run lint",
-    "test": "NODE_ENV=coverage nyc --check-coverage --lines 95 --branches 95 npm run tests",
+    "test": "NODE_ENV=coverage nyc --check-coverage --lines 90 --branches 90 npm run tests",
     "tests": "mocha",
     "tests:watch": "mocha -w"
   },
