@@ -70,7 +70,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
 
   self._compiler = compiler;
 
-  compiler.plugin("after-environment", function() {
+  var afterEnvironmentHook = function() {
     if (!compiler.inputFileSystem._writeVirtualFile) {
       var originalPurge = compiler.inputFileSystem.purge;
 
@@ -92,21 +92,31 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         setData(this._readFileStorage, file, [null, contents]);
       };
     }
-  });
+  }
 
-  compiler.plugin("after-resolvers", function() {
+  var afterResolversHook = function() {
     if (self._staticModules) {
       Object.keys(self._staticModules).forEach(function(path) {
         self.writeModule(path, self._staticModules[path]);
       });
       delete self._staticModules;
     }
-  });
+  }
 
-  compiler.plugin("watch-run", function(watcher, callback) {
+  var watchRunHook = function(watcher, callback) {
     self._watcher = watcher;
     callback();
-  });
+  }
+
+  if(compiler.hooks) {
+    compiler.hooks.afterEnvironment.tap('VirtualModulesPlugin', afterEnvironmentHook);
+    compiler.hooks.afterResolvers.tap('VirtualModulesPlugin', afterResolversHook);
+    compiler.hooks.watchRun.tapAsync('VirtualModulesPlugin', watchRunHook);
+  } else {
+    compiler.plugin("after-environment", afterEnvironmentHook);
+    compiler.plugin("after-resolvers", afterResolversHook);
+    compiler.plugin("watch-run", watchRunHook);
+  }
 };
 
 module.exports = VirtualModulesPlugin;
