@@ -108,7 +108,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
     callback();
   }
 
-  if(compiler.hooks) {
+  if (compiler.hooks) {
     compiler.hooks.afterEnvironment.tap('VirtualModulesPlugin', afterEnvironmentHook);
     compiler.hooks.afterResolvers.tap('VirtualModulesPlugin', afterResolversHook);
     compiler.hooks.watchRun.tapAsync('VirtualModulesPlugin', watchRunHook);
