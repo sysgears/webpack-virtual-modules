@@ -47,8 +47,8 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   debug(self._compiler.name, "Write module:", modulePath, contents);
 
   self._compiler.inputFileSystem._writeVirtualFile(modulePath, stats, contents);
-  if (self._watcher && self._watcher.compiler.watchFileSystem.watcher.fileWatchers.length) {
-    self._watcher.compiler.watchFileSystem.watcher.fileWatchers.forEach(function(fileWatcher) {
+  if (self._watcher && self._watcher.watchFileSystem.watcher.fileWatchers.length) {
+    self._watcher.watchFileSystem.watcher.fileWatchers.forEach(function(fileWatcher) {
       if (fileWatcher.path === modulePath) {
         debug(self._compiler.name, "Emit file change:", modulePath, time);
         fileWatcher.emit("change", time, null);
@@ -104,7 +104,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
   }
 
   var watchRunHook = function(watcher, callback) {
-    self._watcher = watcher;
+    self._watcher = watcher.compiler || watcher;
     callback();
   }
 
