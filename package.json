@@ -35,7 +35,7 @@
     "webpack": "^3.10.0"
   },
   "dependencies": {
-    "debug": "^3.0.0"
+    "debug": "^4.0.0"
   },
   "files": [
     "*.js"
