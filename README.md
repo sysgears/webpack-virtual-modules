@@ -79,8 +79,8 @@ virtualModules.writeModule('node_modules/module-foo.js',
 
 ## Examples
 
-[Swagger JSDoc Example with Webpack 3](examples/swagger-webpack3)
-[Swagger JSDoc Example with Webpack 4](examples/swagger-webpack4)
+  - [Swagger JSDoc Example with Webpack 3](examples/swagger-webpack3)
+  - [Swagger JSDoc Example with Webpack 4](examples/swagger-webpack4)
 
 ## Inspiration
 This project is inspired by: https://github.com/rmarscher/virtual-module-webpack-plugin
