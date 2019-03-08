@@ -1,0 +1,19 @@
+{
+  "name": "webpack3",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --open"
+  },
+  "devDependencies": {
+    "css-loader": "^2.1.1",
+    "style-loader": "^0.23.1",
+    "swagger-jsdoc": "^3.2.7",
+    "webpack": "^3.0.0",
+    "webpack-cli": "^3.0.0",
+    "webpack-dev-server": "^2.0.0"
+  },
+  "dependencies": {
+    "swagger-ui": "^3.21.0"
+  }
+}
