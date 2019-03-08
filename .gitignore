@@ -4,5 +4,7 @@ node_modules
 dist
 .nyc_output
 .eslintcache
+.history
+.vscode
 npm-debug.log
 reports
