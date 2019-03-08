@@ -18,15 +18,19 @@ SwaggerPlugin.prototype.apply = function(compiler) {
   })});
   virtualModules.apply(compiler);
 
-  compiler.plugin('compilation', function() {
-    const swaggerJson = swaggerJsDoc({
-      swaggerDefinition: {
-        openapi: '3.0.0',
-        info: { title: pkgJson.name, version: pkgJson.version, description: pkgJson.description }
-      },
-      apis: ['*.js', '!(node_modules)/**/*.js']
-    });
-    virtualModules.writeModule(swaggerJsonPath, JSON.stringify(swaggerJson));
+  compiler.plugin('compilation', function(compilation) {
+    try {
+      const swaggerJson = swaggerJsDoc({
+        swaggerDefinition: {
+          openapi: '3.0.0',
+          info: { title: pkgJson.name, version: pkgJson.version, description: pkgJson.description }
+        },
+        apis: ['*.js', '!(node_modules)/**/*.js']
+      });
+      virtualModules.writeModule(swaggerJsonPath, JSON.stringify(swaggerJson));
+    } catch (e) {
+      compilation.errors.push(e);
+    }
   });
 }
 

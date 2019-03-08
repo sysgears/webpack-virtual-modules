@@ -11,7 +11,11 @@ Webpack Plugin that allows dynamical generation of in-memory virtual modules. Wa
 npm install --save-dev webpack-virtual-modules
 ```
 
-## Usage with Webpack 3
+## Usage
+
+For usage with Webpack 3, please see [Webpack 3 Usage](docs/webpack3.md)
+
+## Usage with Webpack 4
 
 ### Static virtual modules generation
 
@@ -56,9 +60,8 @@ var compiler = webpack({
     ]
 });
 
-compiler.plugin('watch', function(callback) {
+compiler.hooks.compilation.tap('MyPlugin', function(compilation) {
   virtualModules.writeModule('node_modules/module-foo.js', '');
-  callback();
 });
 
 compiler.watch();
@@ -73,6 +76,11 @@ virtualModules.writeModule('node_modules/module-foo.js',
 // After this write the webpack will "see" that module-foo.js
 // has been changed and restarts compilation
 ```
+
+## Examples
+
+[Swagger JSDoc Example with Webpack 3](examples/swagger-webpack3)
+[Swagger JSDoc Example with Webpack 4](examples/swagger-webpack4)
 
 ## Inspiration
 This project is inspired by: https://github.com/rmarscher/virtual-module-webpack-plugin
