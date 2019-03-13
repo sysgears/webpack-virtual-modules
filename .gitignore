@@ -8,3 +8,4 @@ dist
 .vscode
 npm-debug.log
 reports
+.idea/*
