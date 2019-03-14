@@ -1,4 +1,4 @@
-// Requiring virtual module generated in-memory by plugin
+// Requiring virtual module generated in memory by the Webpack Virtual Modules plugin
 const swaggerJson = require('swagger.json');
 const swaggerUi = require('swagger-ui');
 require('swagger-ui/dist/swagger-ui.css');
@@ -21,7 +21,7 @@ require('swagger-ui/dist/swagger-ui.css');
  *               type: string
  */
 function getHello(name) {
-  // TODO: Change this with REST API call, when it will be implemented on backend
+  // TODO: Replace the code with a REST API call when it's implemented on the backend
   return { message: 'Hello ' + name + '!' };
 }
 
