@@ -3,9 +3,9 @@
 [![Build Status](https://travis-ci.org/sysgears/webpack-virtual-modules.svg?branch=master)](https://travis-ci.org/sysgears/webpack-virtual-modules)
 [![Twitter Follow](https://img.shields.io/twitter/follow/sysgears.svg?style=social)](https://twitter.com/sysgears)
 
-**Webpack Virtual Modules** is a plugin that allows for dynamical generation of in-memory virtual modules for builds
-created with webpack. This plugin supports watch mode meaning any write to a virtual module is seen by webpack as if a 
-real file stored on the disk has changed.
+**Webpack Virtual Modules** is a plugin that allows for dynamical generation of in-memory virtual modules for JavaScript 
+builds created with webpack. This plugin supports watch mode meaning any write to a virtual module is seen by webpack as 
+if a real file stored on disk has changed.
 
 ## Installation
 
@@ -15,14 +15,14 @@ Use NPM or Yarn to install Webpack Virtual Modules as a development dependency:
 # with NPM
 npm install webpack-virtual-modules --save-dev
 
-# with Yarm
+# with Yarn
 yarn add webpack-virtual-modules --dev
 ```
 
 ## Usage
 
 You can use Webpack Virtual Modules with webpack 3 and 4. The examples below show the usage with webpack 4 and its 
-latest API for using hooks. If you want to use our plugin with webpack 3, check out a dedicated doc:
+latest API for hooks. If you want to use our plugin with webpack 3, check out a dedicated doc:
 
 * [Webpack Virtual Modules with Webpack 3]
 
@@ -35,7 +35,7 @@ webpack configuration object:
 var VirtualModulesPlugin = require('webpack-virtual-modules');
 
 var virtualModules = new VirtualModulesPlugin({
-  'node_modules/module-foo.js': 'module.exports = { foo: "foo" };'
+  'node_modules/module-foo.js': 'module.exports = { foo: "foo" };',
   'node_modules/module-bar.js': 'module.exports = { bar: "bar" };'
 });
 
@@ -51,7 +51,7 @@ You can now import your virtual modules anywhere in the application and use them
 
 ```js
 var moduleFoo = require('module-foo');
-// You can now use moduleFoo in other file
+// You can now use moduleFoo
 console.log(moduleFoo.foo);
 ```
 
@@ -94,10 +94,14 @@ virtualModules.writeModule(
 );
 ```
 
-## Examples
+## More Examples
 
-  - [Swagger JSDoc Example with Webpack 3]
-  - [Swagger JSDoc Example with Webpack 4]
+  - [Swagger and JSDoc Example with Webpack 3]
+  - [Swagger and JSDoc Example with Webpack 4]
+  
+## API Reference
+
+  - [API Reference]
 
 ## Inspiration
 
@@ -109,8 +113,9 @@ Copyright © 2017 [SysGears INC]. This source code is licensed under the [MIT] l
 
 [webpack virtual modules with webpack 3]: https://github.com/sysgears/webpack-virtual-modules/tree/master/docs/webpack3.md
 [webpack compiler hook documentation]: https://webpack.js.org/api/compiler-hooks/
-[swagger jsdoc example with webpack 3]: https://github.com/sysgears/webpack-virtual-modules/tree/master/examples/swagger-webpack3
-[swagger jsdoc example with webpack 4]: https://github.com/sysgears/webpack-virtual-modules/tree/master/examples/swagger-webpack4
+[swagger and jsdoc example with webpack 3]: https://github.com/sysgears/webpack-virtual-modules/tree/master/examples/swagger-webpack3
+[swagger and jsdoc example with webpack 4]: https://github.com/sysgears/webpack-virtual-modules/tree/master/examples/swagger-webpack4
+[api reference]: https://github.com/sysgears/webpack-virtual-modules/tree/master/docs/API%20Reference.md
 [virtual-module-webpack-plugin]: https://github.com/rmarscher/virtual-module-webpack-plugin
 [MIT]: LICENSE
 [SysGears INC]: http://sysgears.com
