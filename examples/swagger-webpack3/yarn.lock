@@ -1479,7 +1479,7 @@ faye-websocket@~0.11.0:
   dependencies:
     websocket-driver ">=0.5.1"
 
-fbjs@^0.8.4, fbjs@^0.8.9:
+fbjs@^0.8.9:
   version "0.8.17"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
@@ -3615,14 +3615,6 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-addons-perf@^15.4.0:
-  version "15.4.2"
-  resolved "https://registry.yarnpkg.com/react-addons-perf/-/react-addons-perf-15.4.2.tgz#110bdcf5c459c4f77cb85ed634bcd3397536383b"
-  integrity sha1-EQvc9cRZxPd8uF7WNLzTOXU2ODs=
-  dependencies:
-    fbjs "^0.8.4"
-    object-assign "^4.1.0"
-
 react-debounce-input@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-debounce-input/-/react-debounce-input-3.2.0.tgz#6978c6061d898f549f40417fb0d2ebbecf50aaaa"
@@ -4413,10 +4405,10 @@ swagger-schema-official@2.0.0-bab6bed:
   resolved "https://registry.yarnpkg.com/swagger-schema-official/-/swagger-schema-official-2.0.0-bab6bed.tgz#70070468d6d2977ca5237b2e519ca7d06a2ea3fd"
   integrity sha1-cAcEaNbSl3ylI3suUZyn0Gouo/0=
 
-swagger-ui@^3.21.0:
-  version "3.21.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.21.0.tgz#4fb77b83097f425f980148c67668466a888ae190"
-  integrity sha512-QjZ3MK51Z/vn822ms8LoW8kXhhSNuvTToK6oz5FtH18ETWxon6xISEiqjK4VEl/FRHVWAdvesXPPoQQDxMZC3Q==
+swagger-ui@^3.22.2:
+  version "3.22.2"
+  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.22.2.tgz#d187e2a96e964666618762cf28f8704479edcc9e"
+  integrity sha512-kwKuQ6wwxnj95REpg7polhg2/EIZ5h19mit8z8XnSnuB+P2dDYcZGcan1Fd+oLrJxLwMcGhNiN87DDn+R35xBg==
   dependencies:
     "@braintree/sanitize-url" "^2.0.2"
     "@kyleshockey/js-yaml" "^1.0.1"
@@ -4435,7 +4427,6 @@ swagger-ui@^3.21.0:
     memoizee "^0.4.12"
     prop-types "^15.5.10"
     react "^15.6.2"
-    react-addons-perf "^15.4.0"
     react-debounce-input "^3.2.0"
     react-dom "^15.6.2"
     react-immutable-proptypes "2.1.0"
