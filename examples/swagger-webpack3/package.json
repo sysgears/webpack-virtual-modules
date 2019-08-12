@@ -11,7 +11,7 @@
     "swagger-jsdoc": "^3.2.7",
     "webpack": "^3.0.0",
     "webpack-cli": "^3.0.0",
-    "webpack-dev-server": "^2.0.0"
+    "webpack-dev-server": "^3.1.11"
   },
   "dependencies": {
     "swagger-ui": "^3.23.5"
