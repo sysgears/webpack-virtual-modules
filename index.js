@@ -75,7 +75,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
       var originalPurge = compiler.inputFileSystem.purge;
 
       compiler.inputFileSystem.purge = function() {
-        originalPurge.call(this, arguments);
+        originalPurge.apply(this, arguments);
         if (this._virtualFiles) {
           Object.keys(this._virtualFiles).forEach(function(file) {
             var data = this._virtualFiles[file];
