@@ -46,9 +46,18 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
 
   debug(self._compiler.name, "Write module:", modulePath, contents);
 
+  // When using the WatchIgnorePlugin (https://github.com/webpack/webpack/blob/52184b897f40c75560b3630e43ca642fcac7e2cf/lib/WatchIgnorePlugin.js),
+  // the original watchFileSystem is stored in `wfs`. The following "unwraps" the ignoring
+  // wrappers, giving us access to the "real" watchFileSystem.
+  let finalWatchFileSystem = self._watcher && self._watcher.watchFileSystem;
+
+  while (finalWatchFileSystem && finalWatchFileSystem.wfs) {
+    finalWatchFileSystem = finalWatchFileSystem.wfs;
+  }
+
   self._compiler.inputFileSystem._writeVirtualFile(modulePath, stats, contents);
-  if (self._watcher && self._watcher.watchFileSystem.watcher.fileWatchers.length) {
-    self._watcher.watchFileSystem.watcher.fileWatchers.forEach(function(fileWatcher) {
+  if (finalWatchFileSystem && finalWatchFileSystem.watcher.fileWatchers.length) {
+    finalWatchFileSystem.watcher.fileWatchers.forEach(function(fileWatcher) {
       if (fileWatcher.path === modulePath) {
         debug(self._compiler.name, "Emit file change:", modulePath, time);
         fileWatcher.emit("change", time, null);
