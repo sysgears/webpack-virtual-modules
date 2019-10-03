@@ -38,7 +38,8 @@ virtualModules.apply(compiler);
 **Parameters**
 
 `filePath` &nbsp;&nbsp;&nbsp; `string` &nbsp;&nbsp;&nbsp; required &nbsp;&nbsp;&nbsp; The path to the generated file 
-where the virtual module will be stored
+where the virtual module will be stored. The path is relative to the webpack context (`path.join(webpackContext, 
+filePath)` is used to determine module location.)
 
 `contents` &nbsp;&nbsp;&nbsp; `string` &nbsp;&nbsp;&nbsp; required &nbsp;&nbsp;&nbsp; The string to be written into the 
 file. The string can contain any code or text
