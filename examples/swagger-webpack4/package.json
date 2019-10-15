@@ -14,7 +14,7 @@
     "webpack-dev-server": "^3.0.0"
   },
   "dependencies": {
-    "swagger-ui": "^3.23.11"
+    "swagger-ui": "^3.24.0"
   },
   "resolutions": {
     "lodash": "^4.17.15"
