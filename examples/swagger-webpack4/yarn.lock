@@ -10,10 +10,10 @@
     core-js "^2.6.5"
     regenerator-runtime "^0.13.2"
 
-"@braintree/sanitize-url@^2.0.2":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@braintree/sanitize-url/-/sanitize-url-2.1.0.tgz#549a9d1f923c9bc7953a585d3e9aa9429be8fe28"
-  integrity sha1-VJqdH5I8m8eVOlhdPpqpQpvo/ig=
+"@braintree/sanitize-url@^3.0.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@braintree/sanitize-url/-/sanitize-url-3.1.0.tgz#8ff71d51053cd5ee4981e5a501d80a536244f7fd"
+  integrity sha512-GcIY79elgB+azP74j8vqkiXz8xLFfIzbQJdlwOPisgbKT00tviJQuEghOXSMVxJ00HoYJbGswr4kcllUc4xCcg==
 
 "@kyleshockey/object-assign-deep@^0.4.0", "@kyleshockey/object-assign-deep@^0.4.2":
   version "0.4.2"
@@ -1198,10 +1198,10 @@ domain-browser@^1.1.1:
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
   integrity sha512-jnjyiM6eRyZl2H+W8Q/zLMA481hzi0eszAaBUzIVnmYVDBbnLxVNnfu1HgEBvCbL+71FrxMl3E6lpKH7Ge3OXA==
 
-dompurify@^1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-1.0.11.tgz#fe0f4a40d147f7cebbe31a50a1357539cfc1eb4d"
-  integrity sha512-XywCTXZtc/qCX3iprD1pIklRVk/uhl8BKpkTxr+ZyMVUzSUg7wkQXRBp/euJ5J5moa1QvfpvaPQVP71z1O59dQ==
+dompurify@^2.0.0:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.0.6.tgz#0a4196c211ce00e848240e52b1d49261af12a3be"
+  integrity sha512-1+AOpCYIKoLER/Ykd/Q/i11slhYy6T29/mmDrTsALH0JcMPB0pt9++8eDTGT70tv6ofmmeptrdqzZpmjMfFLRg==
 
 duplexify@^3.4.2, duplexify@^3.6.0:
   version "3.7.1"
@@ -3343,7 +3343,7 @@ raf@^3.1.0:
   dependencies:
     performance-now "^2.1.0"
 
-randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
+randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5, randombytes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.1.0.tgz#df6f84372f0270dc65cdf6291349ab7a473d4f2a"
   integrity sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==
@@ -3755,7 +3755,7 @@ setprototypeof@1.1.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
   integrity sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==
 
-sha.js@^2.4.0, sha.js@^2.4.8:
+sha.js@^2.4.0, sha.js@^2.4.11, sha.js@^2.4.8:
   version "2.4.11"
   resolved "https://registry.yarnpkg.com/sha.js/-/sha.js-2.4.11.tgz#37a5cf0b81ecbc6943de109ba2960d1b26584ae7"
   integrity sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==
@@ -4045,7 +4045,7 @@ supports-color@^6.1.0:
   dependencies:
     has-flag "^3.0.0"
 
-swagger-client@^3.9.4:
+swagger-client@^3.9.5:
   version "3.9.5"
   resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.9.5.tgz#187d1a601028d8251fb849ad76bc1519af40aa93"
   integrity sha512-DQa4NNnA4fOW2xwEuEIptww3zVr5uWe5ryMq1ZLkYbEsOh5aIeFzEadIEA6xzkwvD3PV694csOmbjOmnapwpKA==
@@ -4104,13 +4104,13 @@ swagger-schema-official@2.0.0-bab6bed:
   resolved "https://registry.yarnpkg.com/swagger-schema-official/-/swagger-schema-official-2.0.0-bab6bed.tgz#70070468d6d2977ca5237b2e519ca7d06a2ea3fd"
   integrity sha1-cAcEaNbSl3ylI3suUZyn0Gouo/0=
 
-swagger-ui@^3.23.11:
-  version "3.23.11"
-  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.23.11.tgz#e1d0b68ec2d87ac3afdfe1fd4e1ae94e845fbb47"
-  integrity sha512-1XUpCKqM4eASWruW2/OmD0j6YXbCU4Q8VlltkzIv7tvINA2luXozEMa3s32s+dW72/c7YvCik8zkXuYC5EiiGA==
+swagger-ui@^3.24.0:
+  version "3.24.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.24.0.tgz#a7e48cfa3745ac98abded2b8898fbf682a7366ca"
+  integrity sha512-qzqRCRhmhSAnYuq2yMVAnaIKmHahlVYpn+Z8NfUqzxg6HNz6kZJYXyHyssMRnUbsJtck8L4wLBN9kOmuqkdOiQ==
   dependencies:
     "@babel/runtime-corejs2" "^7.5.5"
-    "@braintree/sanitize-url" "^2.0.2"
+    "@braintree/sanitize-url" "^3.0.0"
     "@kyleshockey/object-assign-deep" "^0.4.2"
     "@kyleshockey/xml" "^1.0.2"
     base64-js "^1.2.0"
@@ -4118,7 +4118,7 @@ swagger-ui@^3.23.11:
     core-js "^2.5.1"
     css.escape "1.5.1"
     deep-extend "0.6.0"
-    dompurify "^1.0.11"
+    dompurify "^2.0.0"
     ieee754 "^1.1.13"
     immutable "^3.x.x"
     js-file-download "^0.4.1"
@@ -4126,6 +4126,7 @@ swagger-ui@^3.23.11:
     lodash "^4.17.15"
     memoizee "^0.4.12"
     prop-types "^15.7.2"
+    randombytes "^2.1.0"
     react "^15.6.2"
     react-debounce-input "^3.2.0"
     react-dom "^15.6.2"
@@ -4139,7 +4140,8 @@ swagger-ui@^3.23.11:
     remarkable "^1.7.4"
     reselect "^2.5.4"
     serialize-error "^2.1.0"
-    swagger-client "^3.9.4"
+    sha.js "^2.4.11"
+    swagger-client "^3.9.5"
     url-parse "^1.4.7"
     xml-but-prettier "^1.0.1"
     zenscroll "^4.0.2"
