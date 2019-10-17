@@ -169,16 +169,9 @@ describe("webpack-virtual-modules", function() {
       assert(!stats.hasErrors(), stats.toJson().errors[0]);
       const outputPath = path.resolve(__dirname, 'bundle.js');
       const outputFile = fileSystem.readFileSync(outputPath).toString();
-      const output = requireFromString(outputFile, outputPath).default;
+      const output = eval(outputFile + ' module.exports;').default;
       assert.equal(output, 3);
       done();
     });
   });
 });
-
-function requireFromString(src, filename) {
-  const Module = require('module');
-  const m = new Module();
-  m._compile(src, filename);
-  return m.exports;
-}
