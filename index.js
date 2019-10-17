@@ -66,6 +66,14 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   }
 };
 
+function getData(storage, key) {
+  if (storage.data instanceof Map) {
+    return storage.data.get(key);
+  } else {
+    return storage.data[key];
+  }
+}
+
 function setData(storage, key, value) {
   if (storage.data instanceof Map) {
     storage.data.set(key, value);
@@ -88,8 +96,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         if (this._virtualFiles) {
           Object.keys(this._virtualFiles).forEach(function(file) {
             var data = this._virtualFiles[file];
-            setData(this._statStorage, file, [null, data.stats]);
-            setData(this._readFileStorage, file, [null, data.contents]);
+            this._writeVirtualFile(file, data.stats, data.contents);
           }.bind(this));
         }
       };
@@ -99,6 +106,44 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         this._virtualFiles[file] = {stats: stats, contents: contents};
         setData(this._statStorage, file, [null, stats]);
         setData(this._readFileStorage, file, [null, contents]);
+        var segments = file.split(/[\\/]/);
+        var count = segments.length - 1;
+        var minCount = segments[0] ? 1 : 0;
+        while (count > minCount) {
+          var dir = segments.slice(0, count).join(path.sep) || path.sep;
+          try {
+            compiler.inputFileSystem.readdirSync(dir);
+          } catch (e) {
+            var time = Date.now();
+            var dirStats = new VirtualStats({
+              dev: 8675309,
+              nlink: 0,
+              uid: 1000,
+              gid: 1000,
+              rdev: 0,
+              blksize: 4096,
+              ino: inode++,
+              mode: 16877,
+              size: stats.size,
+              blocks: Math.floor(stats.size / 4096),
+              atime: time,
+              mtime: time,
+              ctime: time,
+              birthtime: time
+            });
+            setData(this._readdirStorage, dir, [null, []]);
+            setData(this._statStorage, dir, [null, dirStats]);
+          }
+          var dirData = getData(this._readdirStorage, dir);
+          var filename = segments[count];
+          if (dirData[1].indexOf(filename) < 0) {
+            var files = dirData[1].concat([filename]).sort();
+            setData(this._readdirStorage, dir, [null, files]);
+          } else {
+            break;
+          }
+          count--;
+        }
       };
     }
   }

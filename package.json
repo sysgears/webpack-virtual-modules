@@ -1,12 +1,12 @@
 {
   "name": "webpack-virtual-modules",
-  "version": "0.1.12",
+  "version": "0.2.0",
   "description": "Webpack Virtual Modules",
   "main": "index.js",
   "scripts": {
     "lint": "eslint --fix .",
     "posttest": "npm run lint",
-    "test": "NODE_ENV=coverage nyc --check-coverage --lines 90 --branches 90 npm run tests",
+    "test": "NODE_ENV=coverage nyc --check-coverage --lines 90 --branches 85 npm run tests",
     "tests": "mocha",
     "tests:watch": "mocha -w"
   },

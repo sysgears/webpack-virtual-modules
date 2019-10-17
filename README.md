@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/sysgears/webpack-virtual-modules.svg?branch=master)](https://travis-ci.org/sysgears/webpack-virtual-modules)
 [![Twitter Follow](https://img.shields.io/twitter/follow/sysgears.svg?style=social)](https://twitter.com/sysgears)
 
-**Webpack Virtual Modules** is a plugin that allows for dynamical generation of in-memory virtual modules for JavaScript 
-builds created with webpack. This plugin supports watch mode meaning any write to a virtual module is seen by webpack as 
+**Webpack Virtual Modules** is a plugin that allows for dynamical generation of in-memory virtual modules for JavaScript
+builds created with webpack. When virtual module is created all the parent virtual dirs that lead to the module filename are created too. This plugin supports watch mode meaning any write to a virtual module is seen by webpack as
 if a real file stored on disk has changed.
 
 ## Installation
@@ -21,7 +21,7 @@ yarn add webpack-virtual-modules --dev
 
 ## Usage
 
-You can use Webpack Virtual Modules with webpack 3 and 4. The examples below show the usage with webpack 4 and its 
+You can use Webpack Virtual Modules with webpack 3 and 4. The examples below show the usage with webpack 4 and its
 latest API for hooks. If you want to use our plugin with webpack 3, check out a dedicated doc:
 
 * [Webpack Virtual Modules with Webpack 3]
@@ -57,10 +57,10 @@ console.log(moduleFoo.foo);
 
 ### Generating dynamic virtual modules
 
-You can generate virtual modules **_dynamically_** with Webpack Virtual Modules. 
+You can generate virtual modules **_dynamically_** with Webpack Virtual Modules.
 
-Here's an example of dynamic generation of a module. All you need to do is create new virtual modules using the plugin 
-and add them to the `plugins` array. After that, you need to add a webpack hook. For using hooks, consult [webpack 
+Here's an example of dynamic generation of a module. All you need to do is create new virtual modules using the plugin
+and add them to the `plugins` array. After that, you need to add a webpack hook. For using hooks, consult [webpack
 compiler hook documentation].
 
 ```js
@@ -84,7 +84,7 @@ compiler.hooks.compilation.tap('MyPlugin', function(compilation) {
 compiler.watch();
 ```
 
-In other module or a Webpack plugin, you can write to the module `module-foo` whatever you need. After this write, 
+In other module or a Webpack plugin, you can write to the module `module-foo` whatever you need. After this write,
 webpack will "see" that `module-foo.js` has changed and will restart compilation.
 
 ```js
@@ -98,7 +98,7 @@ virtualModules.writeModule(
 
   - [Swagger and JSDoc Example with Webpack 3]
   - [Swagger and JSDoc Example with Webpack 4]
-  
+
 ## API Reference
 
   - [API Reference]

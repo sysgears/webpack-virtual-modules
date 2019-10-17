@@ -143,4 +143,37 @@ describe("webpack-virtual-modules", function() {
       }
     });
   });
+
+  it('should work with path which parent dir not exists', function (done) {
+    var plugin = new Plugin({
+      'entry.js': 'const a = require("a").default; const b = require("b").default; export default a + b;',
+      'node_modules/a.js': 'export default 1;',
+      'node_modules/b.js': 'export default 2;'
+    });
+    var compiler = webpack({
+      context: __dirname,
+      plugins: [plugin],
+      entry: './entry.js',
+      output: {
+        path: path.resolve(__dirname),
+        filename: 'bundle.js',
+        library: 'test',
+        libraryTarget: 'umd'
+      },
+      target: 'node'
+    });
+    const fileSystem = new MemoryFileSystem();
+    compiler.outputFileSystem = fileSystem;
+    compiler.run(function(err, stats) {
+      assert(!err);
+      assert(!stats.hasErrors(), stats.toJson().errors[0]);
+      const outputPath = path.resolve(__dirname, 'bundle.js');
+      const outputFile = fileSystem.readFileSync(outputPath).toString();
+      const output = eval(outputFile + ' module.exports;').default;
+      assert.equal(output, 3);
+      assert.includeMembers(compiler.inputFileSystem.readdirSync(__dirname), ['entry.js', 'node_modules']);
+      assert.includeMembers(compiler.inputFileSystem.readdirSync(path.join(__dirname, 'node_modules')), ['a.js', 'b.js']);
+      done();
+    });
+  });
 });
