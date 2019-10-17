@@ -66,13 +66,13 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   }
 };
 
-/*function getData(storage, key) {
+function getData(storage, key) {
   if (storage.data instanceof Map) {
     return storage.data.get(key);
   } else {
     return storage.data[key];
   }
-}*/
+}
 
 function setData(storage, key, value) {
   if (storage.data instanceof Map) {
@@ -104,7 +104,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
           Object.keys(this._virtualDirs).forEach(function (dir) {
             var data = this._virtualDirs[dir];
             setData(this._statStorage, dir, [null, data.stats]);
-            // setData(this._readdirStorage, dir, [null, data.files]);
+            setData(this._readdirStorage, dir, [null, data.files]);
           }.bind(this));
         }
       };
@@ -135,13 +135,17 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
             ctime: time,
             birthtime: time
           });
-          // var dirData = getData(this._readdirStorage, dir);
-          // var files = dirData ? dirData[1].concat([path.basename(file)]) : [path.basename(file)];
-          // var files = [path.basename(file)]; // now it will always be the [file]. which file is the first file found without exist parent directory. but it seems that webpack resolver not care it.
           this._virtualDirs = this._virtualDirs || {};
-          this._virtualDirs[dir] = {stats: dirStats};
+          this._virtualDirs[dir] = {stats: dirStats, files: []};
           setData(this._statStorage, dir, [null, dirStats]);
-          // setData(this._readdirStorage, dir, [null, files]);
+          setData(this._readdirStorage, dir, [null, []]);
+        }
+        var dirData = getData(this._readdirStorage, dir);
+        var filename = path.basename(file);
+        if (dirData && dirData[1].indexOf(filename) < 0) {
+          var files = dirData[1].concat([filename]).sort();
+          this._virtualDirs[dir].files = files;
+          setData(this._readdirStorage, dir, [null, files]);
         }
       };
     }
