@@ -104,7 +104,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
           Object.keys(this._virtualDirs).forEach(function (dir) {
             var data = this._virtualDirs[dir];
             setData(this._statStorage, dir, [null, data.stats]);
-            setData(this._readdirStorage, dir, [null, data.files]);
+            // setData(this._readdirStorage, dir, [null, data.files]);
           }.bind(this));
         }
       };
@@ -137,11 +137,11 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
           });
           // var dirData = getData(this._readdirStorage, dir);
           // var files = dirData ? dirData[1].concat([path.basename(file)]) : [path.basename(file)];
-          var files = [path.basename(file)]; // now it will always be the [file]. which file is the first file found without exist parent directory. but it seems that webpack resolver not care it.
+          // var files = [path.basename(file)]; // now it will always be the [file]. which file is the first file found without exist parent directory. but it seems that webpack resolver not care it.
           this._virtualDirs = this._virtualDirs || {};
-          this._virtualDirs[dir] = {stats: dirStats, files};
+          this._virtualDirs[dir] = {stats: dirStats};
           setData(this._statStorage, dir, [null, dirStats]);
-          setData(this._readdirStorage, dir, [null, files]);
+          // setData(this._readdirStorage, dir, [null, files]);
         }
       };
     }
