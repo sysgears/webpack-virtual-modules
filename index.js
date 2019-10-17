@@ -96,15 +96,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         if (this._virtualFiles) {
           Object.keys(this._virtualFiles).forEach(function(file) {
             var data = this._virtualFiles[file];
-            setData(this._statStorage, file, [null, data.stats]);
-            setData(this._readFileStorage, file, [null, data.contents]);
-          }.bind(this));
-        }
-        if (this._virtualDirs) {
-          Object.keys(this._virtualDirs).forEach(function (dir) {
-            var data = this._virtualDirs[dir];
-            setData(this._statStorage, dir, [null, data.stats]);
-            setData(this._readdirStorage, dir, [null, data.files]);
+            this._writeVirtualFile(file, data.stats, data.contents);
           }.bind(this));
         }
       };
@@ -114,38 +106,43 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         this._virtualFiles[file] = {stats: stats, contents: contents};
         setData(this._statStorage, file, [null, stats]);
         setData(this._readFileStorage, file, [null, contents]);
-        var dir = path.dirname(file);
-        try {
-          compiler.inputFileSystem.statSync(dir);
-        } catch (e) {
-          var time = Date.now();
-          var dirStats = new VirtualStats({
-            dev: 8675309,
-            nlink: 0,
-            uid: 1000,
-            gid: 1000,
-            rdev: 0,
-            blksize: 4096,
-            ino: inode++,
-            mode: 16877,
-            size: stats.size,
-            blocks: Math.floor(stats.size / 4096),
-            atime: time,
-            mtime: time,
-            ctime: time,
-            birthtime: time
-          });
-          this._virtualDirs = this._virtualDirs || {};
-          this._virtualDirs[dir] = {stats: dirStats, files: []};
-          setData(this._statStorage, dir, [null, dirStats]);
-          setData(this._readdirStorage, dir, [null, []]);
-        }
-        var dirData = getData(this._readdirStorage, dir);
-        var filename = path.basename(file);
-        if (dirData && dirData[1].indexOf(filename) < 0) {
-          var files = dirData[1].concat([filename]).sort();
-          this._virtualDirs[dir].files = files;
-          setData(this._readdirStorage, dir, [null, files]);
+        var segments = file.split(/[\\/]/);
+        var count = segments.length - 1;
+        var minCount = segments[0] ? 1 : 0;
+        while (count > minCount) {
+          var dir = segments.slice(0, count).join(path.sep) || path.sep;
+          try {
+            compiler.inputFileSystem.readdirSync(dir);
+          } catch (e) {
+            var time = Date.now();
+            var dirStats = new VirtualStats({
+              dev: 8675309,
+              nlink: 0,
+              uid: 1000,
+              gid: 1000,
+              rdev: 0,
+              blksize: 4096,
+              ino: inode++,
+              mode: 16877,
+              size: stats.size,
+              blocks: Math.floor(stats.size / 4096),
+              atime: time,
+              mtime: time,
+              ctime: time,
+              birthtime: time
+            });
+            setData(this._readdirStorage, dir, [null, []]);
+            setData(this._statStorage, dir, [null, dirStats]);
+          }
+          var dirData = getData(this._readdirStorage, dir);
+          var filename = segments[count];
+          if (dirData[1].indexOf(filename) < 0) {
+            var files = dirData[1].concat([filename]).sort();
+            setData(this._readdirStorage, dir, [null, files]);
+          } else {
+            break;
+          }
+          count--;
         }
       };
     }

@@ -171,6 +171,8 @@ describe("webpack-virtual-modules", function() {
       const outputFile = fileSystem.readFileSync(outputPath).toString();
       const output = eval(outputFile + ' module.exports;').default;
       assert.equal(output, 3);
+      assert.includeMembers(compiler.inputFileSystem.readdirSync(__dirname), ['entry.js', 'node_modules']);
+      assert.includeMembers(compiler.inputFileSystem.readdirSync(path.join(__dirname, 'node_modules')), ['a.js', 'b.js']);
       done();
     });
   });
