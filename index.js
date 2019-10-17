@@ -66,13 +66,13 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   }
 };
 
-function getData(storage, key) {
+/*function getData(storage, key) {
   if (storage.data instanceof Map) {
     return storage.data.get(key);
   } else {
     return storage.data[key];
   }
-}
+}*/
 
 function setData(storage, key, value) {
   if (storage.data instanceof Map) {
@@ -114,35 +114,34 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         this._virtualFiles[file] = {stats: stats, contents: contents};
         setData(this._statStorage, file, [null, stats]);
         setData(this._readFileStorage, file, [null, contents]);
-        if (this.fileSystem) {
-          var dir = path.dirname(file);
-          try {
-            this.fileSystem.statSync(dir);
-          } catch (e) {
-            var time = Date.now();
-            var dirStats = new VirtualStats({
-              dev: 8675309,
-              nlink: 0,
-              uid: 1000,
-              gid: 1000,
-              rdev: 0,
-              blksize: 4096,
-              ino: inode++,
-              mode: 16877,
-              size: stats.size,
-              blocks: Math.floor(stats.size / 4096),
-              atime: time,
-              mtime: time,
-              ctime: time,
-              birthtime: time
-            });
-            var dirData = getData(this._readdirStorage, dir);
-            var files = dirData ? dirData[1].concat([path.basename(file)]) : [path.basename(file)];
-            this._virtualDirs = this._virtualDirs || {};
-            this._virtualDirs[dir] = {stats: dirStats, files};
-            setData(this._statStorage, dir, [null, dirStats]);
-            setData(this._readdirStorage, dir, [null, files]);
-          }
+        var dir = path.dirname(file);
+        try {
+          compiler.inputFileSystem.statSync(dir);
+        } catch (e) {
+          var time = Date.now();
+          var dirStats = new VirtualStats({
+            dev: 8675309,
+            nlink: 0,
+            uid: 1000,
+            gid: 1000,
+            rdev: 0,
+            blksize: 4096,
+            ino: inode++,
+            mode: 16877,
+            size: stats.size,
+            blocks: Math.floor(stats.size / 4096),
+            atime: time,
+            mtime: time,
+            ctime: time,
+            birthtime: time
+          });
+          // var dirData = getData(this._readdirStorage, dir);
+          // var files = dirData ? dirData[1].concat([path.basename(file)]) : [path.basename(file)];
+          var files = [path.basename(file)]; // now it will always be the [file]. which file is the first file found without exist parent directory. but it seems that webpack resolver not care it.
+          this._virtualDirs = this._virtualDirs || {};
+          this._virtualDirs[dir] = {stats: dirStats, files};
+          setData(this._statStorage, dir, [null, dirStats]);
+          setData(this._readdirStorage, dir, [null, files]);
         }
       };
     }
