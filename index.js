@@ -25,6 +25,7 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
 
   var len = contents ? contents.length : 0;
   var time = Date.now();
+  var date = new Date(time);
 
   var stats = new VirtualStats({
     dev: 8675309,
@@ -37,10 +38,10 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
     mode: 33188,
     size: len,
     blocks: Math.floor(len / 4096),
-    atime: time,
-    mtime: time,
-    ctime: time,
-    birthtime: time
+    atime: date,
+    mtime: date,
+    ctime: date,
+    birthtime: date
   });
   var modulePath = getModulePath(filePath, self._compiler);
 
