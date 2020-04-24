@@ -50,13 +50,18 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   // When using the WatchIgnorePlugin (https://github.com/webpack/webpack/blob/52184b897f40c75560b3630e43ca642fcac7e2cf/lib/WatchIgnorePlugin.js),
   // the original watchFileSystem is stored in `wfs`. The following "unwraps" the ignoring
   // wrappers, giving us access to the "real" watchFileSystem.
-  let finalWatchFileSystem = self._watcher && self._watcher.watchFileSystem;
+  var finalWatchFileSystem = self._watcher && self._watcher.watchFileSystem;
 
   while (finalWatchFileSystem && finalWatchFileSystem.wfs) {
     finalWatchFileSystem = finalWatchFileSystem.wfs;
   }
 
-  self._compiler.inputFileSystem._writeVirtualFile(modulePath, stats, contents);
+  var finalInputFileSystem = self._compiler.inputFileSystem;
+  while (finalInputFileSystem && finalInputFileSystem._inputFileSystem) {
+    finalInputFileSystem = finalInputFileSystem._inputFileSystem;
+  }
+
+  finalInputFileSystem._writeVirtualFile(modulePath, stats, contents);
   if (finalWatchFileSystem && finalWatchFileSystem.watcher.fileWatchers.length) {
     finalWatchFileSystem.watcher.fileWatchers.forEach(function(fileWatcher) {
       if (fileWatcher.path === modulePath) {
@@ -89,10 +94,15 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
   self._compiler = compiler;
 
   var afterEnvironmentHook = function() {
-    if (!compiler.inputFileSystem._writeVirtualFile) {
-      var originalPurge = compiler.inputFileSystem.purge;
+    var finalInputFileSystem = compiler.inputFileSystem;
+    while (finalInputFileSystem && finalInputFileSystem._inputFileSystem) {
+      finalInputFileSystem = finalInputFileSystem._inputFileSystem;
+    }
 
-      compiler.inputFileSystem.purge = function() {
+    if (!finalInputFileSystem._writeVirtualFile) {
+      var originalPurge = finalInputFileSystem.purge;
+
+      finalInputFileSystem.purge = function() {
         originalPurge.apply(this, arguments);
         if (this._virtualFiles) {
           Object.keys(this._virtualFiles).forEach(function(file) {
@@ -102,7 +112,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         }
       };
 
-      compiler.inputFileSystem._writeVirtualFile = function(file, stats, contents) {
+      finalInputFileSystem._writeVirtualFile = function(file, stats, contents) {
         this._virtualFiles = this._virtualFiles || {};
         this._virtualFiles[file] = {stats: stats, contents: contents};
         setData(this._statStorage, file, [null, stats]);
@@ -113,7 +123,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         while (count > minCount) {
           var dir = segments.slice(0, count).join(path.sep) || path.sep;
           try {
-            compiler.inputFileSystem.readdirSync(dir);
+            finalInputFileSystem.readdirSync(dir);
           } catch (e) {
             var time = Date.now();
             var dirStats = new VirtualStats({
