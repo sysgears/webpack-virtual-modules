@@ -18,6 +18,22 @@ function getModulePath(filePath, compiler) {
   return path.isAbsolute(filePath) ? filePath : path.join(compiler.context, filePath);
 }
 
+/** Creates an internal result used by webpack.
+ * It infers the shape of the result based on the provided fileSystem.
+ */
+function createWebpackData(result, fileSystem) {
+  // Webpack 5
+  if (fileSystem._statBackend) {
+    return {
+      result,
+      // TODO: This probably isn't right.
+      level: new Set()
+    }
+  }
+  // Webpack 4
+  return [ null, result];
+}
+
 VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   var self = this;
 
@@ -73,7 +89,13 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
 };
 
 function getData(storage, key) {
-  if (storage.data instanceof Map) {
+  // Webpack 5
+  if (storage._data instanceof Map) {
+    return storage._data.get(key);
+  } else if(storage._data) {
+    return storage.data[key];
+  } else if (storage.data instanceof Map) {
+    // Webpack v4
     return storage.data.get(key);
   } else {
     return storage.data[key];
@@ -81,11 +103,50 @@ function getData(storage, key) {
 }
 
 function setData(storage, key, value) {
-  if (storage.data instanceof Map) {
+  // Webpack 5
+  if (storage._data instanceof Map) {
+    storage._data.set(key, value);
+  } else if(storage._data) {
+    storage.data[key] = value;
+  } else if (storage.data instanceof Map) {
+    // Webpack 4
     storage.data.set(key, value);
   } else {
     storage.data[key] = value;
   }
+}
+
+function getStatStorage(fileSystem) {
+  if(fileSystem._statStorage) {
+    // Webpack v4
+    return fileSystem._statStorage;
+  } else if (fileSystem._statBackend) {
+    // webpack v5
+    return fileSystem._statBackend
+  } else {
+    // Unknown version?
+    throw new Error("Couldn't find a stat storage");
+  }
+}
+
+function getFileStorage(fileSystem) {
+  if (fileSystem._readFileStorage) {
+    // Webpack v4
+    return fileSystem._readFileStorage;
+  } else if (fileSystem._readFileBackend) {
+    // Webpack v5
+    return fileSystem._readFileBackend;
+  }
+  throw new Error("Couldn't find a readFileStorage")
+}
+
+function getReadDirBackend(fileSystem) {
+  if(fileSystem._readdirBackend) {
+    return fileSystem._readdirBackend;
+  } else if(fileSystem._readdirStorage) {
+    return fileSystem._readdirStorage;
+  }
+  throw new Error("Couldn't find a readDirStorage from Webpack Internals")
 }
 
 VirtualModulesPlugin.prototype.apply = function(compiler) {
@@ -115,11 +176,12 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
       finalInputFileSystem._writeVirtualFile = function(file, stats, contents) {
         this._virtualFiles = this._virtualFiles || {};
         this._virtualFiles[file] = {stats: stats, contents: contents};
-        setData(this._statStorage, file, [null, stats]);
-        setData(this._readFileStorage, file, [null, contents]);
+        setData(getStatStorage(this), file, createWebpackData(stats, this));
+        setData(getFileStorage(this), file, createWebpackData(contents, this));
         var segments = file.split(/[\\/]/);
         var count = segments.length - 1;
         var minCount = segments[0] ? 1 : 0;
+
         while (count > minCount) {
           var dir = segments.slice(0, count).join(path.sep) || path.sep;
           try {
@@ -142,15 +204,21 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
               ctime: time,
               birthtime: time
             });
-            setData(this._readdirStorage, dir, [null, []]);
-            setData(this._statStorage, dir, [null, dirStats]);
+
+            setData(getReadDirBackend(this), dir, createWebpackData([],this))
+            setData(getStatStorage(this), dir, createWebpackData(dirStats, this))
           }
-          var dirData = getData(this._readdirStorage, dir);
+          var dirData = getData(getReadDirBackend(this), dir);
+          // Webpack v4 returns an array, webpack v5 returns an object
+          dirData = dirData[1] || dirData.result;
+
           var filename = segments[count];
-          if (dirData[1].indexOf(filename) < 0) {
-            var files = dirData[1].concat([filename]).sort();
-            setData(this._readdirStorage, dir, [null, files]);
-          } else {
+
+
+          if (dirData.indexOf(filename) < 0) {
+            var files = dirData.concat([filename]).sort();
+            setData(getReadDirBackend(this), dir, createWebpackData(files, this));
+           } else {
             break;
           }
           count--;
@@ -158,7 +226,6 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
       };
     }
   }
-
   var afterResolversHook = function() {
     if (self._staticModules) {
       Object.keys(self._staticModules).forEach(function(path) {
