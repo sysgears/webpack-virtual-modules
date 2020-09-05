@@ -95,8 +95,9 @@ virtualModules.writeModule(
 
 ## More Examples
 
-  - [Swagger and JSDoc Example with Webpack 3]
+  - [Swagger and JSDoc Example with Webpack 5]
   - [Swagger and JSDoc Example with Webpack 4]
+  - [Swagger and JSDoc Example with Webpack 3]
 
 ## API Reference
 
@@ -114,6 +115,7 @@ Copyright © 2017 [SysGears INC]. This source code is licensed under the [MIT] l
 [webpack compiler hook documentation]: https://webpack.js.org/api/compiler-hooks/
 [swagger and jsdoc example with webpack 3]: https://github.com/sysgears/webpack-virtual-modules/tree/master/examples/swagger-webpack3
 [swagger and jsdoc example with webpack 4]: https://github.com/sysgears/webpack-virtual-modules/tree/master/examples/swagger-webpack4
+[swagger and jsdoc example with webpack 5]: https://github.com/sysgears/webpack-virtual-modules/tree/master/examples/swagger-webpack5
 [api reference]: https://github.com/sysgears/webpack-virtual-modules/tree/master/docs/API%20Reference.md
 [virtual-module-webpack-plugin]: https://github.com/rmarscher/virtual-module-webpack-plugin
 [MIT]: LICENSE
