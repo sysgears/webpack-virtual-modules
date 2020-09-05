@@ -18,7 +18,6 @@ function getModulePath(filePath, compiler) {
   return path.isAbsolute(filePath) ? filePath : path.join(compiler.context, filePath);
 }
 
-
 VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   var self = this;
 
@@ -74,20 +73,20 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
 };
 
 function createWebpackData(result) {
-  return (backendOrStorage) => {
+  return (function (backendOrStorage) {
     // In Webpack v5, this variable is a "Backend", and has the data stored in a field
     // _data. In V4, the `_` prefix isn't present.
     if (backendOrStorage._data) {
       var curLevelIdx = backendOrStorage._currentLevel;
       var curLevel = backendOrStorage._levels[curLevelIdx];
       return {
-        result,
+        result: this.result,
         level: curLevel
       }
     }
     // Webpack 4
-    return [null, result]
-  }
+    return [null, this.result]
+  }).bind({result: result});
 }
 
 function getData(storage, key) {
@@ -141,8 +140,9 @@ function getFileStorage(fileSystem) {
   } else if (fileSystem._readFileBackend) {
     // Webpack v5
     return fileSystem._readFileBackend;
+  } else {
+    throw new Error("Couldn't find a readFileStorage")
   }
-  throw new Error("Couldn't find a readFileStorage")
 }
 
 function getReadDirBackend(fileSystem) {
@@ -150,8 +150,9 @@ function getReadDirBackend(fileSystem) {
     return fileSystem._readdirBackend;
   } else if (fileSystem._readdirStorage) {
     return fileSystem._readdirStorage;
+  } else {
+    throw new Error("Couldn't find a readDirStorage from Webpack Internals")
   }
-  throw new Error("Couldn't find a readDirStorage from Webpack Internals")
 }
 
 VirtualModulesPlugin.prototype.apply = function(compiler) {
@@ -160,7 +161,6 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
   self._compiler = compiler;
 
   var afterEnvironmentHook = function() {
-
 
     var finalInputFileSystem = compiler.inputFileSystem;
     while (finalInputFileSystem && finalInputFileSystem._inputFileSystem) {
