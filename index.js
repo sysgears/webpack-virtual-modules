@@ -18,21 +18,6 @@ function getModulePath(filePath, compiler) {
   return path.isAbsolute(filePath) ? filePath : path.join(compiler.context, filePath);
 }
 
-/** Creates an internal result used by webpack.
- * It infers the shape of the result based on the provided fileSystem.
- */
-function createWebpackData(result, fileSystem) {
-  // Webpack 5
-  if (fileSystem._statBackend) {
-    return {
-      result,
-      // TODO: This probably isn't right.
-      level: new Set()
-    }
-  }
-  // Webpack 4
-  return [ null, result];
-}
 
 VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   var self = this;
@@ -88,6 +73,23 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   }
 };
 
+function createWebpackData(result) {
+  return (backendOrStorage) => {
+    // In Webpack v5, this variable is a "Backend", and has the data stored in a field
+    // _data. In V4, the `_` prefix isn't present.
+    if(backendOrStorage._data) {
+      const curLevelIdx = backendOrStorage._currentLevel;
+      const curLevel = backendOrStorage._levels[curLevelIdx];
+      return {
+        result,
+        level: curLevel
+      }
+    }
+    // Webpack 4
+    return [ null, result]
+  }
+}
+
 function getData(storage, key) {
   // Webpack 5
   if (storage._data instanceof Map) {
@@ -102,19 +104,22 @@ function getData(storage, key) {
   }
 }
 
-function setData(storage, key, value) {
-  // Webpack 5
-  if (storage._data instanceof Map) {
-    storage._data.set(key, value);
-  } else if(storage._data) {
-    storage.data[key] = value;
-  } else if (storage.data instanceof Map) {
+function setData(backendOrStorage, key, valueFactory) {
+  const value = valueFactory(backendOrStorage);
+
+  // Webpack v5
+  if (backendOrStorage._data instanceof Map) {
+    backendOrStorage._data.set(key, value);
+  } else if(backendOrStorage._data) {
+    backendOrStorage.data[key] = value;
+  } else if (backendOrStorage.data instanceof Map) {
     // Webpack 4
-    storage.data.set(key, value);
+    backendOrStorage.data.set(key, value);
   } else {
-    storage.data[key] = value;
+    backendOrStorage.data[key] = value;
   }
 }
+
 
 function getStatStorage(fileSystem) {
   if(fileSystem._statStorage) {
@@ -155,6 +160,8 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
   self._compiler = compiler;
 
   var afterEnvironmentHook = function() {
+
+
     var finalInputFileSystem = compiler.inputFileSystem;
     while (finalInputFileSystem && finalInputFileSystem._inputFileSystem) {
       finalInputFileSystem = finalInputFileSystem._inputFileSystem;
@@ -174,10 +181,16 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
       };
 
       finalInputFileSystem._writeVirtualFile = function(file, stats, contents) {
+
+        const statStorage = getStatStorage(this);
+        const fileStorage = getFileStorage(this);
+        const readDirStorage = getReadDirBackend(this);
+
+
         this._virtualFiles = this._virtualFiles || {};
         this._virtualFiles[file] = {stats: stats, contents: contents};
-        setData(getStatStorage(this), file, createWebpackData(stats, this));
-        setData(getFileStorage(this), file, createWebpackData(contents, this));
+        setData(statStorage, file, createWebpackData(stats));
+        setData(fileStorage, file, createWebpackData(contents));
         var segments = file.split(/[\\/]/);
         var count = segments.length - 1;
         var minCount = segments[0] ? 1 : 0;
@@ -205,8 +218,8 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
               birthtime: time
             });
 
-            setData(getReadDirBackend(this), dir, createWebpackData([],this))
-            setData(getStatStorage(this), dir, createWebpackData(dirStats, this))
+            setData(readDirStorage, dir, createWebpackData([]))
+            setData(statStorage, dir, createWebpackData(dirStats))
           }
           var dirData = getData(getReadDirBackend(this), dir);
           // Webpack v4 returns an array, webpack v5 returns an object
@@ -217,7 +230,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
 
           if (dirData.indexOf(filename) < 0) {
             var files = dirData.concat([filename]).sort();
-            setData(getReadDirBackend(this), dir, createWebpackData(files, this));
+            setData(getReadDirBackend(this), dir, createWebpackData(files));
            } else {
             break;
           }
