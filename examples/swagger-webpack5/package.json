@@ -1,0 +1,23 @@
+{
+  "name": "swagger-webpack5",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --open"
+  },
+  "devDependencies": {
+    "css-loader": "^2.1.1",
+    "style-loader": "^0.23.1",
+    "swagger-jsdoc": "^3.2.7",
+    "webpack": "^5.0.0-beta.29",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.0.0"
+  },
+  "dependencies": {
+    "buffer": "^5.6.0",
+    "swagger-ui": "^3.24.0"
+  },
+  "resolutions": {
+    "lodash": "^4.17.15"
+  }
+}
