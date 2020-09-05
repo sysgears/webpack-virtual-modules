@@ -123,10 +123,9 @@ describe("webpack-virtual-modules", function() {
 
     var waiter = function(callback) {
       const fileWatchers = compiler.watchFileSystem.watcher.fileWatchers;
-
-      if(fileWatchers instanceof Map) {
+      if (fileWatchers instanceof Map) {
         // Webpack v5 is a map
-        if(fileWatchers.keys === 0) {
+        if (fileWatchers.keys === 0) {
           setTimeout(function() { waiter(callback); }, 50);
         } else {
           callback();

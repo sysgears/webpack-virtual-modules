@@ -77,9 +77,9 @@ function createWebpackData(result) {
   return (backendOrStorage) => {
     // In Webpack v5, this variable is a "Backend", and has the data stored in a field
     // _data. In V4, the `_` prefix isn't present.
-    if(backendOrStorage._data) {
-      const curLevelIdx = backendOrStorage._currentLevel;
-      const curLevel = backendOrStorage._levels[curLevelIdx];
+    if (backendOrStorage._data) {
+      var curLevelIdx = backendOrStorage._currentLevel;
+      var curLevel = backendOrStorage._levels[curLevelIdx];
       return {
         result,
         level: curLevel
@@ -94,7 +94,7 @@ function getData(storage, key) {
   // Webpack 5
   if (storage._data instanceof Map) {
     return storage._data.get(key);
-  } else if(storage._data) {
+  } else if (storage._data) {
     return storage.data[key];
   } else if (storage.data instanceof Map) {
     // Webpack v4
@@ -105,12 +105,12 @@ function getData(storage, key) {
 }
 
 function setData(backendOrStorage, key, valueFactory) {
-  const value = valueFactory(backendOrStorage);
+  var value = valueFactory(backendOrStorage);
 
   // Webpack v5
   if (backendOrStorage._data instanceof Map) {
     backendOrStorage._data.set(key, value);
-  } else if(backendOrStorage._data) {
+  } else if (backendOrStorage._data) {
     backendOrStorage.data[key] = value;
   } else if (backendOrStorage.data instanceof Map) {
     // Webpack 4
@@ -122,7 +122,7 @@ function setData(backendOrStorage, key, valueFactory) {
 
 
 function getStatStorage(fileSystem) {
-  if(fileSystem._statStorage) {
+  if (fileSystem._statStorage) {
     // Webpack v4
     return fileSystem._statStorage;
   } else if (fileSystem._statBackend) {
@@ -146,9 +146,9 @@ function getFileStorage(fileSystem) {
 }
 
 function getReadDirBackend(fileSystem) {
-  if(fileSystem._readdirBackend) {
+  if (fileSystem._readdirBackend) {
     return fileSystem._readdirBackend;
-  } else if(fileSystem._readdirStorage) {
+  } else if (fileSystem._readdirStorage) {
     return fileSystem._readdirStorage;
   }
   throw new Error("Couldn't find a readDirStorage from Webpack Internals")
@@ -181,12 +181,9 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
       };
 
       finalInputFileSystem._writeVirtualFile = function(file, stats, contents) {
-
-        const statStorage = getStatStorage(this);
-        const fileStorage = getFileStorage(this);
-        const readDirStorage = getReadDirBackend(this);
-
-
+        var statStorage = getStatStorage(this);
+        var fileStorage = getFileStorage(this);
+        var readDirStorage = getReadDirBackend(this);
         this._virtualFiles = this._virtualFiles || {};
         this._virtualFiles[file] = {stats: stats, contents: contents};
         setData(statStorage, file, createWebpackData(stats));
@@ -194,7 +191,6 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         var segments = file.split(/[\\/]/);
         var count = segments.length - 1;
         var minCount = segments[0] ? 1 : 0;
-
         while (count > minCount) {
           var dir = segments.slice(0, count).join(path.sep) || path.sep;
           try {
@@ -224,10 +220,7 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
           var dirData = getData(getReadDirBackend(this), dir);
           // Webpack v4 returns an array, webpack v5 returns an object
           dirData = dirData[1] || dirData.result;
-
           var filename = segments[count];
-
-
           if (dirData.indexOf(filename) < 0) {
             var files = dirData.concat([filename]).sort();
             setData(getReadDirBackend(this), dir, createWebpackData(files));
