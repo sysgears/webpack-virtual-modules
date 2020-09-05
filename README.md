@@ -21,8 +21,7 @@ yarn add webpack-virtual-modules --dev
 
 ## Usage
 
-You can use Webpack Virtual Modules with webpack 3 and 4. The examples below show the usage with webpack 4 and its
-latest API for hooks. If you want to use our plugin with webpack 3, check out a dedicated doc:
+You can use Webpack Virtual Modules with webpack 5, 4 and 3. The examples below show the usage with webpack 5 or 4. If you want to use our plugin with webpack 3, check out a dedicated doc:
 
 * [Webpack Virtual Modules with Webpack 3]
 
