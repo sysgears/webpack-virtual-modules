@@ -86,7 +86,7 @@ function createWebpackData(result) {
       }
     }
     // Webpack 4
-    return [ null, result]
+    return [null, result]
   }
 }
 
