@@ -184,4 +184,59 @@ describe("webpack-virtual-modules", function() {
       done();
     });
   });
+
+  it("shouldn't rebuild all virtual modules on any change", function(done) {
+    var plugin = new Plugin({
+      'entry.js': 'require("./dep_one.js"); require("./dep_two.js");',
+      'dep_one.js': '',
+      'dep_two.js': ''
+    });
+    var compiler = webpack({
+      plugins: [plugin],
+      entry: { bundle: './entry.js' },
+      mode: 'development'
+    });
+    compiler.outputFileSystem = new MemoryFileSystem();
+    var count = 0;
+    var modulesBuilt;
+
+    var waiter = function(callback) {
+      const fileWatchers = compiler.watchFileSystem.watcher.fileWatchers;
+      if (fileWatchers instanceof Map) {
+        // Webpack v5 is a map
+        if (fileWatchers.keys === 0) {
+          setTimeout(function() { waiter(callback); }, 50);
+        } else {
+          callback();
+        }
+      } else if (!Object.keys(fileWatchers).length) {
+        setTimeout(function() { waiter(callback); }, 50);
+      } else {
+        callback();
+      }
+    };
+
+    compiler.hooks.done.tap('Plugin', function(stats) {
+      if(count !== 1) return;
+      // assert doesn't throw here for some reason, writing to modulesBuilt
+      modulesBuilt = stats.toJson().modules.filter(function(m) {
+        return m.codeGenerated != null ? m.codeGenerated : m.built;
+      }).length;
+    });
+
+    var watcher = compiler.watch(null, function(err, stats) {
+      if (count === 0) {
+        waiter(function() {
+          plugin.writeModule('dep_one.js', 'var baz;');
+          var fs = stats.compilation.inputFileSystem;
+          fs.purge();
+          assert.equal(fs.readFileSync(path.resolve('dep_one.js')).toString(), 'var baz;');
+          count++;
+        });
+      } else {
+        watcher.close(done);
+        assert.equal(modulesBuilt, 1, 'only one module should be built');
+      }
+    });
+  });
 });
