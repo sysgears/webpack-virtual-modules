@@ -62,10 +62,24 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   }
 
   finalInputFileSystem._writeVirtualFile(modulePath, stats, contents);
-  if (finalWatchFileSystem && finalWatchFileSystem.watcher.fileWatchers.length) {
-    finalWatchFileSystem.watcher.fileWatchers.forEach(function(fileWatcher) {
+  if (finalWatchFileSystem &&
+      (finalWatchFileSystem.watcher.fileWatchers.size ||
+      finalWatchFileSystem.watcher.fileWatchers.length)
+      ) {
+    var fileWatchers = finalWatchFileSystem.watcher.fileWatchers instanceof Map ?
+      Array.from(finalWatchFileSystem.watcher.fileWatchers.values()) :
+      finalWatchFileSystem.watcher.fileWatchers;
+    fileWatchers.forEach(function(fileWatcher) {
       if (fileWatcher.path === modulePath) {
         debug(self._compiler.name, "Emit file change:", modulePath, time);
+        delete fileWatcher.directoryWatcher._cachedTimeInfoEntries;
+        fileWatcher.directoryWatcher.setFileTime(
+          filePath,
+          time,
+          false,
+          false,
+          null
+        );
         fileWatcher.emit("change", time, null);
       }
     });
@@ -188,8 +202,6 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
         this._virtualFiles[file] = {stats: stats, contents: contents};
         setData(statStorage, file, createWebpackData(stats));
         setData(fileStorage, file, createWebpackData(contents));
-        self._compiler.fileTimestamps instanceof Map &&
-          self._compiler.fileTimestamps.set(file, +stats.mtime);
         var segments = file.split(/[\\/]/);
         var count = segments.length - 1;
         var minCount = segments[0] ? 1 : 0;
@@ -245,13 +257,6 @@ VirtualModulesPlugin.prototype.apply = function(compiler) {
 
   var watchRunHook = function(watcher, callback) {
     self._watcher = watcher.compiler || watcher;
-    const virtualFiles = self._compiler.inputFileSystem._virtualFiles;
-    if (virtualFiles) {
-      Object.keys(virtualFiles).forEach(function(file) {
-        self._compiler.fileTimestamps instanceof Map &&
-          self._compiler.fileTimestamps.set(file, +virtualFiles[file].stats.mtime);
-      });
-    }
     callback();
   }
 
