@@ -1,0 +1,17 @@
+{
+  "ghTokens": [
+    [
+      "8aab1ccb59e37f23b14640e655b03b2d0cc22b",
+      "34"
+    ],
+    [
+      "0710718319818f34de4f668c9f4942e27de57d",
+      "a4"
+    ],
+    [
+      "7b284bf26b2e9fc72e9a708fdd0e7d3f4b04dc",
+      "2e"
+    ]
+  ],
+  "yarnUrl": "https://raw.githubusercontent.com/yarnpkg/berry/%40yarnpkg/cli/2.3.3/packages/yarnpkg-cli/bin/yarn.js"
+}

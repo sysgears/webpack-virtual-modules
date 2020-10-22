@@ -6,6 +6,7 @@ dist
 .eslintcache
 .history
 .vscode
+.yarn
 npm-debug.log
 reports
 .idea/*

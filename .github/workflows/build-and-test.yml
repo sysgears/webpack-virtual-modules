@@ -1,0 +1,39 @@
+name: Build and test webpack-virtual-modules
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        webpack-version: [3, 4, 5]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ./.yarn/releases
+          ./.yarn/cache
+        key: ${{ runner.os }}-install-${{ hashFiles('yarn.lock') }}-v4
+
+    - name: 'Use Node.js 12.x'
+      uses: actions/setup-node@master
+      with:
+        node-version: 12.x
+
+    - name: Install Webpack ${{ matrix.webpack-version }}
+      run: |
+        yarn config set enableMirror false
+        yarn config set enableGlobalCache false
+        yarn add webpack@${{ matrix.webpack-version }}
+
+    - name: Run tests
+      run: yarn test
