@@ -2,7 +2,6 @@ import MemoryFileSystem from 'memory-fs';
 import webpack from 'webpack';
 import path from 'path';
 import Plugin from '../index';
-import { resolve } from 'dns';
 
 describe('webpack-virtual-modules', () => {
   it('should fail if not applied as plugin', () => {
