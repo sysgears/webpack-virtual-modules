@@ -1,11 +1,66 @@
 {
-  "extends": [
-    "eslint:recommended"
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    }
+  },
+  "plugins": [
+    "@typescript-eslint/eslint-plugin",
+    "prettier",
+    "jest"
   ],
   "env": {
+    "es6": true,
     "node": true,
-    "es6": true
+    "jest": true
   },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "prettier",
+    "prettier/@typescript-eslint"
+  ],
   "rules": {
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "no-use-before-define": 0,
+    "arrow-body-style": 0,
+    "dot-notation": 0,
+    "no-console": 0,
+    "semi": 2,
+    "prettier/prettier": [
+      "error",
+      {
+        "printWidth": 120,
+        "singleQuote": true,
+        "parser": "typescript"
+      }
+    ]
+  },
+  "settings": {
+    "@typescript-eslint/camelcase": ["error", {"allow": ["__non_webpack_module__", "__non_webpack_require__", "^npm(_[a-z]+)+$"]}],
+    "@typescript-eslint/class-name-casing": 2,
+    "@typescript-eslint/indent": ["error", 2, {"SwitchCase": 1}],
+    "@typescript-eslint/no-unused-vars": [2, {"args": "none", "ignoreRestSiblings": true}],
+    "array-bracket-spacing": 2,
+    "arrow-spacing": 2,
+    "comma-dangle": ["error", "always-multiline"],
+    "computed-property-spacing": 2,
+    "generator-star-spacing": ["error", {"before": true, "after": true}],
+    "keyword-spacing": 2,
+    "no-multiple-empty-lines": 2,
+    "no-tabs": 2,
+    "no-trailing-spaces": 2,
+    "no-unused-vars": "off",
+    "object-curly-spacing": 2,
+    "padded-blocks": ["error", "never"],
+    "prefer-template": 2,
+    "rest-spread-spacing": 2,
+    "template-curly-spacing": 2
   }
 }

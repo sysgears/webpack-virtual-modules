@@ -5,6 +5,7 @@ node_js:
 env:
   - WEBPACK_VERSION=^3.0.0
   - WEBPACK_VERSION=^4.0.0
+  - WEBPACK_VERSION=^5.0.0
 
 before_script:
   - "yarn add -D webpack@$WEBPACK_VERSION"
