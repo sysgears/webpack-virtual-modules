@@ -75,11 +75,14 @@ const promises = []
 
 if (CURRENT_YARN_URL_HASH !== YARN_URL_HASH) {
   if (CURRENT_YARN_BINARYNAME) {
-    fs.rmdirSync(RELEASES_DIR, { recursive: true });
-    fs.rmdirSync(PLUGIN_DIR, { recursive: true });
+    if (fs.existsSync(RELEASES_DIR))
+      fs.rmdirSync(RELEASES_DIR, { recursive: true });
+    if (fs.existsSync(PLUGIN_DIR))
+      fs.rmdirSync(PLUGIN_DIR, { recursive: true });
   }
 
-  fs.mkdirSync(RELEASES_DIR, { recursive: true });
+  if (!fs.existsSync(RELEASES_DIR))
+    fs.mkdirSync(RELEASES_DIR, { recursive: true });
 
   promises.push(downloadFile(YARN_BINARY, config.yarnUrl));
 }
@@ -94,7 +97,8 @@ for (const plugin of PLUGIN_LIST) {
 }
 
 if (PLUGIN_LIST.length === 0) {
-  fs.rmdirSync(PLUGIN_DIR, { recursive: true });
+  if (fs.existsSync(PLUGIN_DIR))
+    fs.rmdirSync(PLUGIN_DIR, { recursive: true });
 } else {
   const entries = fs.readdirSync(path.join(PLUGIN_DIR, '@yarnpkg'));
   for (const entry of entries) {
