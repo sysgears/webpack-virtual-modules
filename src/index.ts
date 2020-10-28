@@ -96,7 +96,7 @@ function getReadDirBackend(fileSystem) {
   }
 }
 
-export default class VirtualModulesPlugin {
+class VirtualModulesPlugin {
   private _staticModules: Record<string, string> | null;
   private _compiler: Compiler | null = null;
   private _watcher: any = null;
@@ -273,3 +273,5 @@ export default class VirtualModulesPlugin {
     }
   }
 }
+
+export = VirtualModulesPlugin;
