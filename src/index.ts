@@ -259,6 +259,13 @@ class VirtualModulesPlugin {
 
     const watchRunHook = (watcher, callback) => {
       this._watcher = watcher.compiler || watcher;
+      const virtualFiles = (compiler as any).inputFileSystem._virtualFiles;
+      const fts = compiler.fileTimestamps as any;
+      if (virtualFiles && fts && typeof fts.set === 'function') {
+        Object.keys(virtualFiles).forEach((file) => {
+          fts.set(file, +virtualFiles[file].stats.mtime);
+        });
+      }
       callback();
     };
 
