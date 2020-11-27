@@ -221,4 +221,83 @@ describe('webpack-virtual-modules', () => {
       });
     });
   });
+
+  // only run test for webpack 4
+  (webpack.version && webpack.version.startsWith('4') ? it : it.skip)(
+    'should NOT rebuild all virtual modules on any change',
+    async () => {
+      const countLoader = require('./count-loader');
+      const plugin = new Plugin({
+        'entry.js': 'require("./dep_one.js"); require("./dep_two.js");',
+        'dep_one.js': '',
+        'dep_two.js': '',
+      });
+      const config = {
+        plugins: [plugin],
+        entry: { bundle: './entry.js' },
+        module: {
+          rules: [
+            {
+              test: /\.js$/,
+              use: countLoader.loader,
+            },
+          ],
+        },
+      };
+      // webpack 3 doesn't have version field on its constructor and doesn't
+      // support mode: development
+      // left for future testing and possibility of enabling test for it
+      if (webpack.version && typeof webpack.version === 'string') {
+        config.mode = 'development';
+      }
+      const compiler = webpack(config);
+      compiler.outputFileSystem = new MemoryFileSystem();
+      let count = 0;
+
+      const waiter = (callback) => {
+        const fileWatchers = (compiler.watchFileSystem as any).watcher.fileWatchers;
+        if (fileWatchers instanceof Map) {
+          // Webpack v5 is a map
+          if (!Array.from(fileWatchers.keys()).length) {
+            setTimeout(function () {
+              waiter(callback);
+            }, 50);
+          } else {
+            callback();
+          }
+        } else if (!Object.keys(fileWatchers).length) {
+          setTimeout(function () {
+            waiter(callback);
+          }, 50);
+        } else {
+          callback();
+        }
+      };
+
+      return new Promise((resolve) => {
+        const watcher = compiler.watch({}, (err, stats) => {
+          if (count === 0) {
+            waiter(() => {
+              if (!stats) throw err;
+
+              plugin.writeModule('dep_one.js', 'const baz;');
+              const fs = stats.compilation.inputFileSystem as MemoryFileSystem;
+              fs.purge();
+
+              // eslint-disable-next-line jest/no-conditional-expect
+              // eslint-disable-next-line jest/no-standalone-expect
+              expect(fs.readFileSync(path.resolve('dep_one.js')).toString()).toEqual('const baz;');
+              count++;
+            });
+          } else {
+            watcher.close(resolve);
+
+            // eslint-disable-next-line jest/no-conditional-expect
+            // eslint-disable-next-line jest/no-standalone-expect
+            expect(countLoader.modulesBuilt()).toEqual(4);
+          }
+        });
+      });
+    }
+  );
 });
