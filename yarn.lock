@@ -3065,7 +3065,7 @@ fsevents@^2.1.2:
 
 "fsevents@patch:fsevents@^2.1.2#builtin<compat/fsevents>":
   version: 2.1.3
-  resolution: "fsevents@patch:fsevents@npm%3A2.1.3#builtin<compat/fsevents>::version=2.1.3&hash=127e8e"
+  resolution: "fsevents@patch:fsevents@npm%3A2.1.3#builtin<compat/fsevents>::version=2.1.3&hash=11e9ea"
   dependencies:
     node-gyp: latest
   checksum: c389355408e0de9ebc24020bbc905c7dfac03dfdf619e9bb9773ed5b94651ab5cdac31957fad7fc7ad05a86f3a4c6b5698e24dc31625206cde6b3ccf5f1ab73f
@@ -6672,11 +6672,11 @@ typescript@^4.0.5:
 
 "typescript@patch:typescript@^4.0.5#builtin<compat/typescript>":
   version: 4.0.5
-  resolution: "typescript@patch:typescript@npm%3A4.0.5#builtin<compat/typescript>::version=4.0.5&hash=5bf698"
+  resolution: "typescript@patch:typescript@npm%3A4.0.5#builtin<compat/typescript>::version=4.0.5&hash=cc6730"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: c78801984ee0dd8eb3d2d6ce2417e926c7cfcfc2756dc958a4b8a8596b0ad4a1aab531961fd73e3e5ef7a1007301c406cbb336f8ecad90b6a7b4e02b9f5019cb
+  checksum: c05ed81d73439898733ae66ab8a337f5ef23cc3b120f101085d22d89f99d7ae663b52123a6e4602ffdfe6999cfb142f64e3533845a199327c37c00c13e6aa0cd
   languageName: node
   linkType: hard
 
