@@ -13,5 +13,5 @@
       "2e"
     ]
   ],
-  "yarnUrl": "https://raw.githubusercontent.com/yarnpkg/berry/%40yarnpkg/cli/2.4.0/packages/yarnpkg-cli/bin/yarn.js"
+  "yarnUrl": "https://api.github.com/repos/yarnpkg/berry/actions/artifacts/28868701/zip"
 }
