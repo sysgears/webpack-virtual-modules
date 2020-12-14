@@ -133,6 +133,7 @@ class VirtualModulesPlugin {
       birthtime: date,
     });
     const modulePath = getModulePath(filePath, this._compiler);
+    const fts = this._compiler.fileTimestamps as any;
 
     if (process.env.DEBUG)
       // eslint-disable-next-line no-console
@@ -166,6 +167,9 @@ class VirtualModulesPlugin {
           if (process.env.DEBUG)
             // eslint-disable-next-line no-console
             console.log(this._compiler.name, 'Emit file change:', modulePath, time);
+
+          if (fts && typeof fts.set === 'function' && fts.get(modulePath)) fts.set(modulePath, time);
+
           delete fileWatcher.directoryWatcher._cachedTimeInfoEntries;
           fileWatcher.directoryWatcher.setFileTime(filePath, time, false, false, null);
           fileWatcher.emit('change', time, null);
