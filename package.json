@@ -57,7 +57,8 @@
     "webpack": "^5.3.0"
   },
   "files": [
-    "*.js"
+    "*.js",
+    "*.d.ts"
   ],
   "publishConfig": {
     "main": "lib/index.js",
