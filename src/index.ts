@@ -134,7 +134,7 @@ class VirtualModulesPlugin {
     });
     const modulePath = getModulePath(filePath, this._compiler);
 
-    if (process.env.DEBUG)
+    if (process.env.WVM_DEBUG)
       // eslint-disable-next-line no-console
       console.log(this._compiler.name, 'Write virtual module:', modulePath, contents);
 
