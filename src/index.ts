@@ -4,6 +4,14 @@ import type { Compiler } from 'webpack';
 
 let inode = 45000000;
 
+let FS_ACCURACY = 2000;
+function applyMtime (mtime) {
+    if (FS_ACCURACY > 1 && mtime % 2 !== 0) FS_ACCURACY = 1;
+    else if (FS_ACCURACY > 10 && mtime % 20 !== 0) FS_ACCURACY = 10;
+    else if (FS_ACCURACY > 100 && mtime % 200 !== 0) FS_ACCURACY = 100;
+    else if (FS_ACCURACY > 1000 && mtime % 2000 !== 0) FS_ACCURACY = 1000;
+};
+
 function checkActivation(instance) {
   if (!instance._compiler) {
     throw new Error('You must use this plugin only after creating webpack instance!');
@@ -263,7 +271,14 @@ class VirtualModulesPlugin {
       const fts = compiler.fileTimestamps as any;
       if (virtualFiles && fts && typeof fts.set === 'function') {
         Object.keys(virtualFiles).forEach((file) => {
-          fts.set(file, +virtualFiles[file].stats.mtime);
+          const mtime = +virtualFiles[file].stats.mtime;
+          if (mtime) applyMtime(mtime);
+          // webpack 5.58.2
+          fts.set(file, {
+              accuracy: 0,
+              safeTime: mtime ? mtime + FS_ACCURACY : Infinity,
+              timestamp: mtime
+          });
         });
       }
       callback();
