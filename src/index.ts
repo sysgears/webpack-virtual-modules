@@ -161,7 +161,10 @@ class VirtualModulesPlugin {
         finalWatchFileSystem.watcher.fileWatchers instanceof Map
           ? Array.from(finalWatchFileSystem.watcher.fileWatchers.values())
           : finalWatchFileSystem.watcher.fileWatchers;
-      for (const fileWatcher of fileWatchers) {
+      for (let fileWatcher of fileWatchers) {
+        if ('watcher' in fileWatcher) {
+          fileWatcher = fileWatcher.watcher;
+        }
         if (fileWatcher.path === modulePath) {
           if (process.env.DEBUG)
             // eslint-disable-next-line no-console
