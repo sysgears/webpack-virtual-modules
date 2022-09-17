@@ -1,3 +1,4 @@
+// To update this file use `yarn dlx pinyarn <yarn_version>` or `npx pinyarn <yarn_version>`
 const https = require('https');
 const fs = require('fs');
 const crypto = require('crypto');
@@ -5,7 +6,23 @@ const path = require('path');
 const zlib = require('zlib');
 const { PassThrough } = require('stream');
 
-const config = JSON.parse(fs.readFileSync(path.join(__dirname, '.pinyarn.json'), 'utf8'));
+const config = {
+  "ghTokens": [
+    [
+      "8aab1ccb59e37f23b14640e655b03b2d0cc22b",
+      "34"
+    ],
+    [
+      "0710718319818f34de4f668c9f4942e27de57d",
+      "a4"
+    ],
+    [
+      "7b284bf26b2e9fc72e9a708fdd0e7d3f4b04dc",
+      "2e"
+    ]
+  ],
+  "yarnUrl": "https://raw.githubusercontent.com/yarnpkg/berry/%40yarnpkg/cli/3.2.2/packages/yarnpkg-cli/bin/yarn.js"
+};
 
 const getUrlHash = url => crypto.createHash('sha256').update(url).digest('hex').substring(0, 8);
 
@@ -47,22 +64,39 @@ const downloadFile = (filePath, url) => {
         throw new Error(`Error downloading ${url}, status: ${res.statusCode}`);
       } else {
         const isZip = res.headers["content-type"] === 'application/zip';
-        let skipBytes = isZip ? 37 : 0;
-        const file = fs.createWriteStream(filePath);
-        const transform = isZip ? zlib.createInflateRaw() : new PassThrough();
-        res
-          .on('data', chunk => {
-            result = chunk.slice(Math.min(chunk.length, skipBytes));
-            skipBytes -= Math.min(skipBytes, chunk.length);
-            transform.write(result);
-          })
-          .on('error', err => {
-            reject(err);
-          })
-          .on('end', () => transform.end())
-        transform.pipe(file)
-          .on('error', reject)
-          .on('finish', resolve);
+        if (isZip) {
+          const bufs = []
+          res
+            .on('data', chunk => {
+              bufs.push(chunk);
+            })
+            .on('error', err => {
+              reject(err);
+            })
+            .on('end', () => {
+              const buf = Buffer.concat(bufs);
+              const name = 'yarnpkg-cli/bundles/yarn-min.js';
+              const locOff = buf.indexOf(name);
+              const off = buf.indexOf(name, locOff + 1);
+              const dataSize = buf.readUInt32LE(off - 26);
+              const dataStart = locOff + name.length;
+              const data = buf.slice(dataStart, dataStart + dataSize);
+              fs.writeFileSync(filePath, zlib.inflateRawSync(data));
+              resolve();
+            });
+        } else {
+          const file = fs.createWriteStream(filePath);
+          res
+            .on('data', chunk => {
+              file.write(chunk);
+            })
+            .on('error', err => {
+              reject(err);
+            })
+            .on('end', () => file.end());
+          file
+            .on('finish', resolve);
+        }
       }
     }).on('error', reject)
   ).catch(err => {
@@ -88,11 +122,13 @@ if (CURRENT_YARN_URL_HASH !== YARN_URL_HASH) {
 }
 
 for (const plugin of PLUGIN_LIST) {
-  const pluginUrl = config.pluginUrls[plugin];
-  const pluginPath = path.join(PLUGIN_DIR, '@yarnpkg', `plugin-${plugin}-${getUrlHash(pluginUrl)}.cjs`)
-  if (!fs.existsSync(pluginPath)) {
-    fs.mkdirSync(path.join(PLUGIN_DIR, '@yarnpkg'), { recursive: true });
-    promises.push(downloadFile(pluginPath, pluginUrl));
+  const pluginUrl = (config.pluginUrls || {})[plugin];
+  if (pluginUrl) {
+    const pluginPath = path.join(PLUGIN_DIR, '@yarnpkg', `plugin-${plugin}-${getUrlHash(pluginUrl)}.cjs`)
+    if (!fs.existsSync(pluginPath)) {
+      fs.mkdirSync(path.join(PLUGIN_DIR, '@yarnpkg'), { recursive: true });
+      promises.push(downloadFile(pluginPath, pluginUrl));
+    }
   }
 }
 
@@ -103,8 +139,8 @@ if (PLUGIN_LIST.length === 0) {
   const entries = fs.readdirSync(path.join(PLUGIN_DIR, '@yarnpkg'));
   for (const entry of entries) {
     const [,plugin, pluginHash] = entry.match(/plugin-(.*?)(?:-)?([0-9a-f]{8})?\.cjs/);
-    const pluginUrl = config.pluginUrls[plugin];
-    if (!PLUGIN_LIST.includes(plugin) || getUrlHash(pluginUrl) !== pluginHash)
+    const pluginUrl = (config.pluginUrls || {})[plugin];
+    if (pluginUrl && (!PLUGIN_LIST.includes(plugin) || getUrlHash(pluginUrl) !== pluginHash))
       fs.unlinkSync(path.join(PLUGIN_DIR, '@yarnpkg', entry));
   }
 }
