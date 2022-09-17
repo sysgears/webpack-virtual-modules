@@ -170,7 +170,6 @@ class VirtualModulesPlugin {
             // eslint-disable-next-line no-console
             console.log(this._compiler.name, 'Emit file change:', modulePath, time);
           delete fileWatcher.directoryWatcher._cachedTimeInfoEntries;
-          fileWatcher.directoryWatcher.setFileTime(filePath, time, false, false, null);
           fileWatcher.emit('change', time, null);
         }
       }
