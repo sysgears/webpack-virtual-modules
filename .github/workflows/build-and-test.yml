@@ -24,10 +24,10 @@ jobs:
           ./.yarn/cache
         key: ${{ runner.os }}-install-${{ hashFiles('yarn.lock') }}-v4
 
-    - name: 'Use Node.js 12.x'
+    - name: 'Use Node.js 16.x'
       uses: actions/setup-node@master
       with:
-        node-version: 12.x
+        node-version: 16.x
 
     - name: Install Webpack ${{ matrix.webpack-version }}
       run: |
