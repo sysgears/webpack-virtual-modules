@@ -5621,11 +5621,11 @@ __metadata:
     prettier: ^2.7.1
     tmp: ^0.2.1
     typescript: ^4.8.3
-    webpack: ^5.74.0
+    webpack: 5
   languageName: unknown
   linkType: soft
 
-"webpack@npm:^5.74.0":
+"webpack@npm:5":
   version: 5.74.0
   resolution: "webpack@npm:5.74.0"
   dependencies:

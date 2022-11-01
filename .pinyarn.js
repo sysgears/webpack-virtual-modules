@@ -9,19 +9,19 @@ const { PassThrough } = require('stream');
 const config = {
   "ghTokens": [
     [
-      "8aab1ccb59e37f23b14640e655b03b2d0cc22b",
-      "34"
+      "ghp_H",
+      "bcraD8d0OUWoxJdIlgNLNXpyhzS7n1HutiA"
     ],
     [
-      "0710718319818f34de4f668c9f4942e27de57d",
-      "a4"
+      "ghp_9",
+      "HV9r3y93wz0unBeT1SyeILnFZxUzz3dBdrA"
     ],
     [
-      "7b284bf26b2e9fc72e9a708fdd0e7d3f4b04dc",
-      "2e"
+      "ghp_r",
+      "7dvv4UhJhdhbXSKkcGnjCNtUBFznY1vDhx4"
     ]
   ],
-  "yarnUrl": "https://raw.githubusercontent.com/yarnpkg/berry/%40yarnpkg/cli/3.2.2/packages/yarnpkg-cli/bin/yarn.js"
+  "yarnUrl": "https://raw.githubusercontent.com/yarnpkg/berry/%40yarnpkg/cli/3.2.4/packages/yarnpkg-cli/bin/yarn.js"
 };
 
 const getUrlHash = url => crypto.createHash('sha256').update(url).digest('hex').substring(0, 8);

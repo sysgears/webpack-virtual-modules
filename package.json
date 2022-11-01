@@ -1,6 +1,6 @@
 {
   "name": "webpack-virtual-modules",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Webpack Virtual Modules",
   "main": "src/index.ts",
   "scripts": {
@@ -54,11 +54,12 @@
     "prettier": "^2.7.1",
     "tmp": "^0.2.1",
     "typescript": "^4.8.3",
-    "webpack": "^5.74.0"
+    "webpack": "5"
   },
   "files": [
-    "*.js",
-    "*.d.ts"
+    "lib",
+    "src",
+    "!__tests__"
   ],
   "publishConfig": {
     "main": "lib/index.js",
