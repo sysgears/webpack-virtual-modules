@@ -259,13 +259,29 @@ class VirtualModulesPlugin {
       }
     };
 
+    // The webpack property is not exposed in webpack v4
+    const version = typeof (compiler as any).webpack === 'undefined' ? 4 : 5;
+
     const watchRunHook = (watcher, callback) => {
       this._watcher = watcher.compiler || watcher;
       const virtualFiles = (compiler as any).inputFileSystem._virtualFiles;
       const fts = compiler.fileTimestamps as any;
+
       if (virtualFiles && fts && typeof fts.set === 'function') {
         Object.keys(virtualFiles).forEach((file) => {
-          fts.set(file, +virtualFiles[file].stats.mtime);
+          const mtime = +virtualFiles[file].stats.mtime;
+          // fts is
+          // Map<string, number> in webpack 4
+          // Map<string, { safeTime: number; timestamp: number; }> in webpack 5
+          fts.set(
+            file,
+            version === 4
+              ? mtime
+              : {
+                  safeTime: mtime,
+                  timestamp: mtime,
+                }
+          );
         });
       }
       callback();
