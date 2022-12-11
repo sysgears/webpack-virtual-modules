@@ -222,7 +222,9 @@ describe('webpack-virtual-modules', () => {
     });
   });
 
-  it('should NOT rebuild all virtual modules on any change', async () => {
+  const version = (webpack.version && parseInt(webpack.version.split('.')[0])) || 0;
+
+  (version >= 4 ? it : it.skip)('should NOT rebuild all virtual modules on any change', async () => {
     const countLoader = require('./count-loader');
     const plugin = new Plugin({
       'entry.js': 'require("./dep_one.js"); require("./dep_two.js");',
