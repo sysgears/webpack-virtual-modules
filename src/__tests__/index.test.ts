@@ -222,6 +222,44 @@ describe('webpack-virtual-modules', () => {
     });
   });
 
+  it('should compile once in watch mode', async () => {
+    const plugin = new Plugin({
+      'entry.js': 'console.log("build once");',
+    });
+    const compiler = webpack({
+      entry: './entry.js',
+      plugins: [plugin],
+    });
+    const fn = jest.fn(() => {
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
+    return new Promise((resolve) => {
+      const watcher = compiler.watch({}, fn);
+      setTimeout(() => {
+        watcher.close(resolve);
+      }, 500);
+    });
+  });
+
+  it('should compile once in build mode', async () => {
+    const plugin = new Plugin({
+      'entry.js': 'console.log("build once");',
+    });
+    const compiler = webpack({
+      entry: './entry.js',
+      plugins: [plugin],
+    });
+    const fn = jest.fn(() => {
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
+    return new Promise<void>((resolve) => {
+      compiler.run(fn);
+      setTimeout(() => {
+        resolve();
+      }, 500);
+    });
+  });
+
   const version = (webpack.version && parseInt(webpack.version.split('.')[0])) || 0;
 
   (version >= 4 ? it : it.skip)('should NOT rebuild all virtual modules on any change', async () => {
