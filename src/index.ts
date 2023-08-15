@@ -198,6 +198,48 @@ class VirtualModulesPlugin {
           }
         };
 
+        const originalReaddir = finalInputFileSystem.fileSystem.readdir;
+        finalInputFileSystem.fileSystem.readdir = (path, opts, callback) => {
+          const args = [path];
+          if (typeof opts === 'function') {
+            callback = opts;
+          } else {
+            args.push(opts);
+          }
+          return originalReaddir.apply(finalInputFileSystem.fileSystem, [
+            ...args,
+            (err1: any, files1 = []) => {
+              finalInputFileSystem.readdir.apply(finalInputFileSystem, [
+                ...args,
+                (err2: any, files2 = []) => {
+                  callback.apply(this, [err2 || err1, Array.from(new Set(files1.concat(files2)))]);
+                },
+              ]);
+            },
+          ]);
+        };
+
+        const originalLstat = finalInputFileSystem.fileSystem.lstat;
+        finalInputFileSystem.fileSystem.lstat = (path, opts, callback) => {
+          const args = [path];
+          if (typeof opts === 'function') {
+            callback = opts;
+          } else {
+            args.push(opts);
+          }
+          return originalLstat.apply(finalInputFileSystem.fileSystem, [
+            ...args,
+            (err1: any, stats1 = {}) => {
+              finalInputFileSystem.lstat.apply(finalInputFileSystem, [
+                ...args,
+                (err2: any, stats2 = {}) => {
+                  callback.apply(this, [err2 || err1, Object.assign(stats1, stats2)]);
+                },
+              ]);
+            },
+          ]);
+        };
+
         finalInputFileSystem._writeVirtualFile = (file, stats, contents) => {
           const statStorage = getStatStorage(finalInputFileSystem);
           const fileStorage = getFileStorage(finalInputFileSystem);
