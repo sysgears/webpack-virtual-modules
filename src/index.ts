@@ -105,6 +105,10 @@ class VirtualModulesPlugin {
     this._staticModules = modules || null;
   }
 
+  public getModules() {
+    return this._staticModules;
+  }
+
   public writeModule(filePath: string, contents: string): void {
     if (!this._compiler) {
       throw new Error(`Plugin has not been initialized`);
