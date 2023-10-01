@@ -26,7 +26,37 @@ describe('webpack-virtual-modules', () => {
     options[path.resolve('static_module2.js')] = 'const bar;';
     const plugin = new Plugin(options);
 
-    expect(plugin.getModules()).toMatchObject(options);
+    expect(plugin.getModuleList()).toMatchObject(options);
+  });
+
+  it('should return dynamic and static modules', async () => {
+    const options = { 'static_module.js': 'const foo;' };
+    const plugin = new Plugin(options);
+
+    const compiler = webpack({
+      plugins: [plugin],
+      entry: './entry.js',
+    });
+
+    return new Promise((resolve) => {
+      const watcher = compiler.watch({}, (err, stats) => {
+        if (!stats) throw err;
+
+        plugin.writeModule('dynamic_module.js', 'const baz;');
+
+        const fs = stats.compilation.inputFileSystem as MemoryFileSystem;
+        fs.purge();
+
+        const finalOptions = {
+          [path.resolve('static_module.js')]: 'const foo;',
+          [path.resolve('dynamic_module.js')]: 'const baz;',
+        };
+
+        expect(plugin.getModuleList()).toMatchObject(finalOptions);
+
+        watcher.close(resolve);
+      });
+    });
   });
 
   it('should write static modules to fs', async () => {
