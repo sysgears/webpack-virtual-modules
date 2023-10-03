@@ -21,12 +21,50 @@ describe('webpack-virtual-modules', () => {
     expect(() => plugin.writeModule('example.js', '')).not.toThrow();
   });
 
+  it('should return static modules', async () => {
+    const options = { 'static_module1.js': 'const foo;' };
+    options[path.resolve('static_module2.js')] = 'const bar;';
+    const plugin = new Plugin(options);
+
+    expect(plugin.getModuleList()).toMatchObject(options);
+  });
+
+  it('should return dynamic and static modules', async () => {
+    const options = { 'static_module.js': 'const foo;' };
+    const plugin = new Plugin(options);
+
+    const compiler = webpack({
+      plugins: [plugin],
+      entry: './entry.js',
+    });
+
+    return new Promise((resolve) => {
+      const watcher = compiler.watch({}, (err, stats) => {
+        if (!stats) throw err;
+
+        plugin.writeModule('dynamic_module.js', 'const baz;');
+
+        const fs = stats.compilation.inputFileSystem as MemoryFileSystem;
+        fs.purge();
+
+        const finalOptions = {
+          [path.resolve('static_module.js')]: 'const foo;',
+          [path.resolve('dynamic_module.js')]: 'const baz;',
+        };
+
+        expect(plugin.getModuleList()).toMatchObject(finalOptions);
+
+        watcher.close(resolve);
+      });
+    });
+  });
+
   it('should write static modules to fs', async () => {
     const options = { 'static_module1.js': 'const foo;' };
     options[path.resolve('static_module2.js')] = 'const bar;';
     const plugin = new Plugin(options);
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       webpack({
         plugins: [plugin],
         entry: './entry.js',
@@ -46,7 +84,7 @@ describe('webpack-virtual-modules', () => {
       'static_module.js': 'const foo;',
     });
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       webpack({
         plugins: [plugin],
         entry: './entry.js',
@@ -64,7 +102,7 @@ describe('webpack-virtual-modules', () => {
   it('purge should work when no virtual files exist', async () => {
     const plugin = new Plugin();
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       webpack({
         plugins: [plugin],
         entry: './entry.js',
@@ -90,7 +128,7 @@ describe('webpack-virtual-modules', () => {
       entry: './entry.js',
     });
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       compiler.run((err, stats) => {
         if (!stats) throw err;
 
@@ -198,7 +236,7 @@ describe('webpack-virtual-modules', () => {
     const fileSystem = new MemoryFileSystem();
     compiler.outputFileSystem = fileSystem;
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       compiler.run((err, stats) => {
         expect(stats).toBeDefined();
         expect(err).toBeNull();
@@ -247,6 +285,7 @@ describe('webpack-virtual-modules', () => {
     // support mode: development
     // left for future testing and possibility of enabling test for it
     if (webpack.version && typeof webpack.version === 'string') {
+      // @ts-ignore TODO: It's enough?
       config.mode = 'development';
     }
     const compiler = webpack(config);

@@ -3,6 +3,11 @@ import { VirtualStats } from './virtual-stats';
 import type { Compiler } from 'webpack';
 
 let inode = 45000000;
+const ALL = 'all';
+const STATIC = 'static';
+const DYNAMIC = 'dynamic';
+
+type AvailableModules = typeof ALL | typeof STATIC | typeof DYNAMIC;
 
 function checkActivation(instance) {
   if (!instance._compiler) {
@@ -103,6 +108,38 @@ class VirtualModulesPlugin {
 
   public constructor(modules?: Record<string, string>) {
     this._staticModules = modules || null;
+  }
+
+  public getModuleList(filter: AvailableModules = ALL) {
+    let modules = {};
+    const shouldGetStaticModules = filter === ALL || filter === STATIC;
+    const shouldGetDynamicModules = filter === ALL || filter === DYNAMIC;
+
+    if (shouldGetStaticModules) {
+      // Get static modules
+      modules = {
+        ...modules,
+        ...this._staticModules,
+      };
+    }
+
+    if (shouldGetDynamicModules) {
+      // Get dynamic modules
+      const finalInputFileSystem: any = this._compiler?.inputFileSystem;
+      const virtualFiles = finalInputFileSystem?._virtualFiles ?? {};
+
+      const dynamicModules: Record<string, string> = {};
+      Object.keys(virtualFiles).forEach((key: string) => {
+        dynamicModules[key] = virtualFiles[key].contents;
+      });
+
+      modules = {
+        ...modules,
+        ...dynamicModules,
+      };
+    }
+
+    return modules;
   }
 
   public writeModule(filePath: string, contents: string): void {
