@@ -1,7 +1,8 @@
 # Webpack Virtual Modules
 
-[![Build Status](https://travis-ci.org/sysgears/webpack-virtual-modules.svg?branch=master)](https://travis-ci.org/sysgears/webpack-virtual-modules)
-[![Twitter Follow](https://img.shields.io/twitter/follow/sysgears.svg?style=social)](https://twitter.com/sysgears)
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![License][license-src]][license-href]
 
 **Webpack Virtual Modules** is a plugin that allows for dynamical generation of in-memory virtual modules for JavaScript
 builds created with webpack. When virtual module is created all the parent virtual dirs that lead to the module filename are created too. This plugin supports watch mode meaning any write to a virtual module is seen by webpack as
@@ -120,3 +121,11 @@ Copyright © 2017 [SysGears INC]. This source code is licensed under the [MIT] l
 [virtual-module-webpack-plugin]: https://github.com/rmarscher/virtual-module-webpack-plugin
 [MIT]: LICENSE
 [SysGears INC]: http://sysgears.com
+
+<!-- Badges -->
+[npm-version-src]: https://img.shields.io/npm/v/webpack-virtual-modules?style=flat
+[npm-version-href]: https://npmjs.com/package/webpack-virtual-modules
+[npm-downloads-src]: https://img.shields.io/npm/dm/webpack-virtual-modules?style=flat
+[npm-downloads-href]: https://npmjs.com/package/webpack-virtual-modules
+[license-src]: https://img.shields.io/github/license/sysgears/webpack-virtual-modules.svg?style=flat
+[license-href]: https://github.com/sysgears/webpack-virtual-modules/blob/main/LICENSE
