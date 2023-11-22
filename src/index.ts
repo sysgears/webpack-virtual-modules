@@ -192,6 +192,7 @@ class VirtualModulesPlugin {
     finalInputFileSystem._writeVirtualFile(modulePath, stats, contents);
     if (
       finalWatchFileSystem &&
+      finalWatchFileSystem.watcher &&
       (finalWatchFileSystem.watcher.fileWatchers.size || finalWatchFileSystem.watcher.fileWatchers.length)
     ) {
       const fileWatchers =
