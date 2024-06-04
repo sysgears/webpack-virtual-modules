@@ -101,6 +101,14 @@ function getReadDirBackend(fileSystem) {
   }
 }
 
+function getRealpathBackend(fileSystem) {
+  if (fileSystem._realpathBackend) {
+    return fileSystem._realpathBackend;
+  }
+
+  // Nothing, because not all version of webpack support it
+}
+
 class VirtualModulesPlugin {
   private _staticModules: Record<string, string> | null;
   private _compiler: Compiler | null = null;
@@ -240,6 +248,8 @@ class VirtualModulesPlugin {
           const statStorage = getStatStorage(finalInputFileSystem);
           const fileStorage = getFileStorage(finalInputFileSystem);
           const readDirStorage = getReadDirBackend(finalInputFileSystem);
+          const realPathStorage = getRealpathBackend(finalInputFileSystem);
+
           finalInputFileSystem._virtualFiles = finalInputFileSystem._virtualFiles || {};
           finalInputFileSystem._virtualFiles[file] = { stats: stats, contents: contents };
           setData(statStorage, file, createWebpackData(stats));
@@ -271,6 +281,9 @@ class VirtualModulesPlugin {
               });
 
               setData(readDirStorage, dir, createWebpackData([]));
+              if (realPathStorage) {
+                setData(realPathStorage, dir, createWebpackData(dir));
+              }
               setData(statStorage, dir, createWebpackData(dirStats));
             }
             let dirData = getData(getReadDirBackend(finalInputFileSystem), dir);
