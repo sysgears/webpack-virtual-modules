@@ -1,6 +1,6 @@
 {
   "name": "webpack-virtual-modules",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Webpack Virtual Modules",
   "main": "src/index.ts",
   "scripts": {
