@@ -2,6 +2,7 @@
   "name": "webpack-virtual-modules",
   "version": "0.6.2",
   "description": "Webpack Virtual Modules",
+  "packageManager": "yarn@4.2.2",
   "main": "src/index.ts",
   "scripts": {
     "clean": "rm -rf ./lib",
