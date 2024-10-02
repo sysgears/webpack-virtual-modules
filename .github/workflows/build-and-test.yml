@@ -16,24 +16,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ./.yarn/releases
-            ./.yarn/cache
-          key: ${{ runner.os }}-install-${{ hashFiles('yarn.lock') }}-v4
-
-      - name: "Use Node.js 16.x"
+      - name: "Use Node.js 18.x"
         uses: actions/setup-node@master
         with:
-          node-version: 16.x
+          node-version: 18.x
+
+      - name: "Install nari"
+        run: |
+          npm i -g nari
+
+      - name: "Install"
+        run: |
+          nari
 
       - name: Install Webpack ${{ matrix.webpack-version }}
         run: |
-          corepack enable
-          yarn config set enableMirror false
-          yarn config set enableGlobalCache false
-          yarn add webpack@${{ matrix.webpack-version }}
+          nari add webpack@${{ matrix.webpack-version }}
 
       - name: Run tests
-        run: yarn test
+        run: nari test
