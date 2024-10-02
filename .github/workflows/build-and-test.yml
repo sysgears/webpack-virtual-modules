@@ -19,21 +19,22 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: |
-            ./.yarn/releases
-            ./.yarn/cache
-          key: ${{ runner.os }}-install-${{ hashFiles('yarn.lock') }}-v4
+            ~/.cache/nari
+            node_modules
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
 
       - name: "Use Node.js 16.x"
         uses: actions/setup-node@master
         with:
           node-version: 16.x
 
+      - name: "Install nari"
+        run: |
+          npm i -g nari
+
       - name: Install Webpack ${{ matrix.webpack-version }}
         run: |
-          corepack enable
-          yarn config set enableMirror false
-          yarn config set enableGlobalCache false
-          yarn add webpack@${{ matrix.webpack-version }}
+          nari add webpack@${{ matrix.webpack-version }}
 
       - name: Run tests
         run: yarn test

@@ -2,7 +2,6 @@
   "name": "webpack-virtual-modules",
   "version": "0.6.2",
   "description": "Webpack Virtual Modules",
-  "packageManager": "yarn@4.2.2",
   "main": "src/index.ts",
   "scripts": {
     "clean": "rm -rf ./lib",
@@ -10,9 +9,9 @@
     "watch": "tsc -p tsconfig.build.json -w",
     "tests": "jest",
     "tests:watch": "jest --watch",
-    "test": "yarn lint && yarn tests",
+    "test": "nari lint && nari tests",
     "lint": "eslint --fix src/**/*.ts",
-    "prepack": "yarn clean && yarn build"
+    "prepack": "nari clean && nari build"
   },
   "repository": {
     "type": "git",
@@ -37,9 +36,9 @@
     "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.5.5",
     "@types/jest": "^24.0.6",
-    "@types/node": "^11.11.3",
+    "@types/node": "^22.7.4",
     "@types/tmp": "^0.1.0",
-    "@types/webpack": "^4.32.1",
+    "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
     "babel-jest": "^29.0.3",
@@ -55,7 +54,7 @@
     "prettier": "^2.7.1",
     "tmp": "^0.2.1",
     "typescript": "^4.8.3",
-    "webpack": "5"
+    "webpack": "3"
   },
   "files": [
     "lib",
@@ -79,5 +78,6 @@
   },
   "husky": {
     "pre-commit": "lint-staged"
-  }
+  },
+  "lockTime": "2024-10-02T08:19:16.905Z"
 }

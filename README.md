@@ -108,9 +108,20 @@ virtualModules.writeModule(
 
 This project is inspired by [virtual-module-webpack-plugin].
 
+## Contributing
+
+This project uses `nari` package manager to have reproducible builds without resorting to lockfiles, it uses `lockTime` field in `package.json` instead.
+
+To install `nari` execute:
+`npm i -g nari`
+
+And then `nari` to install the project.
+
+To run project scripts use `nari script_name`, for example `nari test` to run unit tests.
+
 ## License
 
-Copyright © 2017 [SysGears INC]. This source code is licensed under the [MIT] license.
+Copyright © 2017 [SysGears (Cyprus) Limited]. This source code is licensed under the [MIT] license.
 
 [webpack virtual modules with webpack 3]: https://github.com/sysgears/webpack-virtual-modules/tree/master/docs/webpack3.md
 [webpack compiler hook documentation]: https://webpack.js.org/api/compiler-hooks/
@@ -120,7 +131,7 @@ Copyright © 2017 [SysGears INC]. This source code is licensed under the [MIT] l
 [api reference]: https://github.com/sysgears/webpack-virtual-modules/tree/master/docs/API%20Reference.md
 [virtual-module-webpack-plugin]: https://github.com/rmarscher/virtual-module-webpack-plugin
 [MIT]: LICENSE
-[SysGears INC]: http://sysgears.com
+[SysGears (Cyprus) Limited]: http://sysgears.com
 
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/webpack-virtual-modules?style=flat
