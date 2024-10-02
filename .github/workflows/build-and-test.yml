@@ -25,6 +25,10 @@ jobs:
         run: |
           npm i -g nari
 
+      - name: "Install"
+        run: |
+          nari
+
       - name: Install Webpack ${{ matrix.webpack-version }}
         run: |
           nari add webpack@${{ matrix.webpack-version }}
