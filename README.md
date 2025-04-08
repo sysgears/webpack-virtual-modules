@@ -110,7 +110,7 @@ This project is inspired by [virtual-module-webpack-plugin].
 
 ## Contributing
 
-This project uses `nari` package manager to have reproducible builds without resorting to lockfiles, it uses `lockTime` field in `package.json` instead.
+This project uses [nari] package manager to have reproducible builds without resorting to lockfiles, it uses `lockTime` field in `package.json` instead.
 
 To install `nari` execute:
 `npm i -g nari`
@@ -123,6 +123,7 @@ To run project scripts use `nari script_name`, for example `nari test` to run un
 
 Copyright © 2017 [SysGears (Cyprus) Limited]. This source code is licensed under the [MIT] license.
 
+[nari]: https://github.com/narijs/nari
 [webpack virtual modules with webpack 3]: https://github.com/sysgears/webpack-virtual-modules/tree/master/docs/webpack3.md
 [webpack compiler hook documentation]: https://webpack.js.org/api/compiler-hooks/
 [swagger and jsdoc example with webpack 3]: https://github.com/sysgears/webpack-virtual-modules/tree/master/examples/swagger-webpack3
